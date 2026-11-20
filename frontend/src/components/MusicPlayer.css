@@ -1,0 +1,663 @@
+/* MusicPlayer.css - Compact, Sleek Glassmorphism Luxury Player */
+
+.player-wrapper {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #f8fafc;
+}
+
+/* Compact Mood Details Banner */
+.mood-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.95rem;
+  background: rgba(22, 22, 38, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  margin-bottom: 0.85rem;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.12),
+    0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.mood-info {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.mood-emoji {
+  font-size: 1.45rem;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+}
+
+.mood-text {
+  min-width: 0;
+}
+
+.mood-text h3 {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mood-text p {
+  margin: 0.1rem 0 0 0;
+  font-size: 0.72rem;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mood-count-badge {
+  padding: 0.25rem 0.65rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  flex-shrink: 0;
+}
+
+/* Master Glassmorphic Card (Compact) */
+.master-glass-card {
+  position: relative;
+  background: rgba(22, 22, 38, 0.72);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  padding: 1.35rem 1.4rem;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.18),
+    0 20px 45px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  transition: border-color 0.4s ease;
+}
+
+/* Ambient glow in card background */
+.card-ambient-glow {
+  position: absolute;
+  top: -70px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  opacity: 0.22;
+  filter: blur(70px);
+  pointer-events: none;
+  transition: background-color 0.6s ease;
+}
+
+/* Album Art & Spinning Vinyl Stage (Compact) */
+.track-showcase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.album-art-stage {
+  position: relative;
+  width: 170px;
+  height: 135px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.85rem;
+}
+
+/* Vinyl Disc (Compact) */
+.vinyl-disc {
+  position: absolute;
+  top: 5px;
+  right: 18px;
+  width: 125px;
+  height: 125px;
+  border-radius: 50%;
+  background: #09090c;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.8);
+  border: 2px solid #1c1c24;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+.vinyl-grooves {
+  width: 82%;
+  height: 82%;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vinyl-center {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+  transition: background-color 0.4s ease;
+}
+
+.vinyl-hole {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #09090c;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Slide out vinyl and spin when playing */
+.album-art-stage.playing .vinyl-disc {
+  transform: translateX(26px);
+}
+
+.album-art-stage.playing .vinyl-disc.spinning {
+  animation: spinVinyl 5s linear infinite;
+}
+
+@keyframes spinVinyl {
+  0% { transform: translateX(26px) rotate(0deg); }
+  100% { transform: translateX(26px) rotate(360deg); }
+}
+
+/* Front Cover Box (Compact 130px) */
+.cover-box {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  border-radius: 16px;
+  z-index: 2;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+}
+
+.cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.playing-badge {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #0b0f19;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #38bdf8;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+}
+
+/* Equalizer mini wave bars */
+.mini-wave {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5px;
+  height: 10px;
+}
+
+.mini-wave span {
+  width: 2px;
+  background: #38bdf8;
+  border-radius: 1px;
+  animation: wave 0.8s infinite ease-in-out alternate;
+}
+.mini-wave span:nth-child(1) { height: 4px; animation-delay: 0.1s; }
+.mini-wave span:nth-child(2) { height: 10px; animation-delay: 0.3s; }
+.mini-wave span:nth-child(3) { height: 6px; animation-delay: 0.2s; }
+
+@keyframes wave {
+  0% { height: 2px; }
+  100% { height: 10px; }
+}
+
+.track-meta {
+  text-align: center;
+  width: 100%;
+  padding: 0 0.5rem;
+}
+
+.track-meta h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.track-meta p {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Seek Bar Container (Compact) */
+.progress-area {
+  margin-bottom: 0.95rem;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.scrubber-track {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #252538;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+  transition: height 0.15s ease;
+}
+
+.scrubber-track:hover {
+  height: 6px;
+}
+
+.scrubber-track::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  transition: transform 0.15s ease;
+}
+
+.scrubber-track::-webkit-slider-thumb:hover {
+  transform: scale(1.3);
+}
+
+.time-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #94a3b8;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Master Control Buttons (Compact) */
+.controls-deck {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  margin-bottom: 0.95rem;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.sec-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.05rem;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.sec-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sec-btn.active {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.15);
+}
+
+.step-btn {
+  background: rgba(35, 35, 56, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f1f5f9;
+  font-size: 1.2rem;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
+}
+
+.step-btn:hover:not(:disabled) {
+  background: rgba(55, 55, 85, 0.9);
+  color: #ffffff;
+  transform: scale(1.08);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.step-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.step-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.main-play-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #ffffff;
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.main-play-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.7);
+}
+
+.main-play-btn:active {
+  transform: scale(0.95);
+}
+
+/* Volume Bar (Compact) */
+.volume-dock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0.8rem;
+  background: rgba(12, 16, 28, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+.vol-icon {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.vol-icon:hover {
+  color: #ffffff;
+}
+
+.vol-slider {
+  width: 70px;
+  height: 3px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #334155;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+}
+
+.vol-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+/* Playlist Queue Section (Compact) */
+.queue-glass-card {
+  margin-top: 1rem;
+  background: rgba(18, 18, 32, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 1rem 0.85rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+}
+
+.queue-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  padding: 0 0.4rem;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.queue-header h3 {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.queue-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 0.2rem;
+  scrollbar-width: thin;
+}
+
+.queue-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.queue-list::-webkit-scrollbar-thumb {
+  background: #27273d;
+  border-radius: 999px;
+}
+
+.queue-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0.65rem;
+  background: rgba(28, 28, 46, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 0;
+}
+
+.queue-item:hover {
+  background: rgba(45, 45, 75, 0.6);
+  transform: translateX(3px);
+  border-color: rgba(99, 102, 241, 0.4);
+}
+
+.queue-item.active {
+  background: rgba(50, 50, 85, 0.75);
+  border-color: #6366f1;
+  box-shadow: 0 3px 12px rgba(99, 102, 241, 0.25);
+}
+
+.queue-num {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.queue-thumb {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.queue-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.queue-meta h4 {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.queue-meta p {
+  margin: 0.1rem 0 0 0;
+  font-size: 0.72rem;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.queue-indicator {
+  color: #38bdf8;
+  font-size: 1rem;
+  padding: 0 0.25rem;
+  flex-shrink: 0;
+}
+
+/* RESPONSIVE MEDIA QUERIES FOR ALL DEVICES */
+
+@media (max-width: 480px) {
+  .player-wrapper {
+    max-width: 100%;
+  }
+
+  .master-glass-card {
+    padding: 1.15rem 1rem;
+    border-radius: 20px;
+  }
+
+  .album-art-stage {
+    width: 155px;
+    height: 120px;
+    margin-bottom: 0.75rem;
+  }
+
+  .vinyl-disc {
+    width: 110px;
+    height: 110px;
+  }
+
+  .cover-box {
+    width: 115px;
+    height: 115px;
+  }
+
+  .album-art-stage.playing .vinyl-disc {
+    transform: translateX(20px);
+  }
+
+  .track-meta h2 {
+    font-size: 1.05rem;
+  }
+
+  .track-meta p {
+    font-size: 0.78rem;
+  }
+
+  .controls-deck {
+    gap: 0.65rem;
+  }
+
+  .main-play-btn {
+    width: 46px;
+    height: 46px;
+    font-size: 1.4rem;
+  }
+
+  .step-btn {
+    width: 34px;
+    height: 34px;
+    font-size: 1.1rem;
+  }
+
+  .sec-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.95rem;
+  }
+}

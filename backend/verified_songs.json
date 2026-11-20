@@ -1,0 +1,226 @@
+[
+  {
+    "title": "Carefree",
+    "artist": "Kevin MacLeod",
+    "mood": "happy",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Carefree.mp3",
+    "cover": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Monkeys Spinning Monkeys",
+    "artist": "Kevin MacLeod",
+    "mood": "happy",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Monkeys%20Spinning%20Monkeys.mp3",
+    "cover": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Fluffing a Duck",
+    "artist": "Kevin MacLeod",
+    "mood": "happy",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Fluffing%20a%20Duck.mp3",
+    "cover": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Life of Riley",
+    "artist": "Kevin MacLeod",
+    "mood": "happy",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Life%20of%20Riley.mp3",
+    "cover": "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Upbeat Forever",
+    "artist": "Kevin MacLeod",
+    "mood": "happy",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Upbeat%20Forever.mp3",
+    "cover": "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Heartbreaking",
+    "artist": "Kevin MacLeod",
+    "mood": "sad",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Heartbreaking.mp3",
+    "cover": "https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Sad Trio",
+    "artist": "Kevin MacLeod",
+    "mood": "sad",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Sad%20Trio.mp3",
+    "cover": "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Almost in F",
+    "artist": "Kevin MacLeod",
+    "mood": "sad",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Almost%20in%20F.mp3",
+    "cover": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Despair and Triumph",
+    "artist": "Kevin MacLeod",
+    "mood": "sad",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Despair%20and%20Triumph.mp3",
+    "cover": "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Gymnopedie No 1",
+    "artist": "Kevin MacLeod",
+    "mood": "neutral",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Gymnopedie%20No%201.mp3",
+    "cover": "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Peace of Mind",
+    "artist": "Kevin MacLeod",
+    "mood": "neutral",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Peace%20of%20Mind.mp3",
+    "cover": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Meditation Impromptu 01",
+    "artist": "Kevin MacLeod",
+    "mood": "neutral",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Meditation%20Impromptu%2001.mp3",
+    "cover": "https://images.unsplash.com/photo-1483412033650-1015ddeb83d1?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Deliberate Thought",
+    "artist": "Kevin MacLeod",
+    "mood": "neutral",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Deliberate%20Thought.mp3",
+    "cover": "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Modern Jazz Samba",
+    "artist": "Kevin MacLeod",
+    "mood": "neutral",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Modern%20Jazz%20Samba.mp3",
+    "cover": "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Sneaky Snitch",
+    "artist": "Kevin MacLeod",
+    "mood": "surprised",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Sneaky%20Snitch.mp3",
+    "cover": "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Scheming Weasel Faster",
+    "artist": "Kevin MacLeod",
+    "mood": "surprised",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Scheming%20Weasel%20faster.mp3",
+    "cover": "https://images.unsplash.com/photo-1464375117522-1311d6a5b81f?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Investigations",
+    "artist": "Kevin MacLeod",
+    "mood": "surprised",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Investigations.mp3",
+    "cover": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "The Show Must Be Go",
+    "artist": "Kevin MacLeod",
+    "mood": "surprised",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/The%20Show%20Must%20Be%20Go.mp3",
+    "cover": "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Pop Goes the Weasel",
+    "artist": "Kevin MacLeod",
+    "mood": "surprised",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Pop%20Goes%20the%20Weasel.mp3",
+    "cover": "https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Volatile Reaction",
+    "artist": "Kevin MacLeod",
+    "mood": "angry",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Volatile%20Reaction.mp3",
+    "cover": "https://images.unsplash.com/photo-1511735111819-9a3f7709049c?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Hitman",
+    "artist": "Kevin MacLeod",
+    "mood": "angry",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Hitman.mp3",
+    "cover": "https://images.unsplash.com/photo-1526478806334-5fd488fcaabc?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Clash Defiant",
+    "artist": "Kevin MacLeod",
+    "mood": "angry",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Clash%20Defiant.mp3",
+    "cover": "https://images.unsplash.com/photo-1501612780327-45045538702b?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Heavy Interlude",
+    "artist": "Kevin MacLeod",
+    "mood": "angry",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Heavy%20Interlude.mp3",
+    "cover": "https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Raving Energy",
+    "artist": "Kevin MacLeod",
+    "mood": "angry",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Raving%20Energy.mp3",
+    "cover": "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "The House of Leaves",
+    "artist": "Kevin MacLeod",
+    "mood": "fearful",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/The%20House%20of%20Leaves.mp3",
+    "cover": "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Bump in the Night",
+    "artist": "Kevin MacLeod",
+    "mood": "fearful",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Bump%20in%20the%20Night.mp3",
+    "cover": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Ghost Processional",
+    "artist": "Kevin MacLeod",
+    "mood": "fearful",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Ghost%20Processional.mp3",
+    "cover": "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Echoes of Time",
+    "artist": "Kevin MacLeod",
+    "mood": "fearful",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Echoes%20of%20Time.mp3",
+    "cover": "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Danse Macabre",
+    "artist": "Kevin MacLeod",
+    "mood": "disgusted",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Danse%20Macabre.mp3",
+    "cover": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Gloom Horizon",
+    "artist": "Kevin MacLeod",
+    "mood": "disgusted",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Gloom%20Horizon.mp3",
+    "cover": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Oppressive Gloom",
+    "artist": "Kevin MacLeod",
+    "mood": "disgusted",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Oppressive%20Gloom.mp3",
+    "cover": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "title": "Ossuary 6 - Air",
+    "artist": "Kevin MacLeod",
+    "mood": "disgusted",
+    "audio": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Ossuary%206%20-%20Air.mp3",
+    "cover": "https://images.unsplash.com/photo-1464375117522-1311d6a5b81f?auto=format&fit=crop&w=600&q=80"
+  }
+]

@@ -1,0 +1,88 @@
+/* SpotifyPlayer.css - Classic & Fully Responsive */
+
+.spotify-classic-card {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  background: linear-gradient(145deg, #161626 0%, #10101b 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 1.5rem;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #f8fafc;
+}
+
+.spotify-classic-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.spotify-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.spotify-brand i {
+  font-size: 2rem;
+  color: #1ed760;
+  filter: drop-shadow(0 2px 8px rgba(30, 215, 96, 0.35));
+}
+
+.spotify-brand h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.spotify-brand p {
+  margin: 0.15rem 0 0 0;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.spotify-mood-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.spotify-embed-wrapper {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  background: #000000;
+}
+
+.spotify-embed-wrapper iframe {
+  display: block;
+  border: none;
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .spotify-classic-card {
+    padding: 1.15rem;
+    border-radius: 20px;
+  }
+  .spotify-brand i {
+    font-size: 1.75rem;
+  }
+  .spotify-brand h3 {
+    font-size: 1.05rem;
+  }
+}

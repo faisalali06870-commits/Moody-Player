@@ -1,0 +1,241 @@
+/* .mood-songs{
+    width: 100%;
+    padding: 4rem;
+    padding-top: 20%;
+}
+
+.mood-songs h2{
+    margin-bottom: 1%;
+    
+}
+.mood-songs .song{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+} */
+
+
+/* Playlist card wrapper */
+.mood-songs {
+  width: 90%;
+  max-width: 540px;
+  margin: 1.5rem auto 3rem auto;
+  padding: 1.75rem;
+  background: #1e1e2d;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  color: #f1f5f9;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.mood-songs h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+/* Song row item */
+.mood-songs .song {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.65rem;
+  background: #27273a;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.mood-songs .song:last-child {
+  margin-bottom: 0;
+}
+
+.mood-songs .song:hover {
+  background: #32324a;
+  transform: translateX(4px);
+  border-color: rgba(99, 102, 241, 0.4);
+}
+
+/* Song title and artist text */
+.mood-songs .title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.mood-songs .title h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.mood-songs .title p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+/* Play/Pause Button */
+.play-pause-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #3f3f42;
+  color: #e2e8f0;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.play-pause-button i {
+  font-size: 1.15rem;
+}
+
+.play-pause-button:hover {
+  background: #6366f1;
+  color: #ffffff;
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.play-pause-button:active {
+  transform: scale(0.96);
+}
+
+.mood-songs {
+  width: 90%;
+  max-width: 540px;
+  margin: 1.5rem auto 3rem auto;
+  padding: 1.75rem;
+  background: #1e1e2d;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  color: #f1f5f9;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.mood-songs h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+.mood-songs .song {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.75rem;
+  background: #27273a;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.mood-songs .song:last-child {
+  margin-bottom: 0;
+}
+
+.mood-songs .song:hover {
+  background: #32324a;
+  transform: translateX(4px);
+  border-color: rgba(99, 102, 241, 0.4);
+}
+
+.song-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+.mood-songs .title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.mood-songs .title h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.mood-songs .title p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.play-pause-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #3f3f42;
+  color: #e2e8f0;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+}
+
+.play-pause-button i {
+  font-size: 1.15rem;
+}
+
+.play-pause-button:hover {
+  background: #6366f1;
+  color: #ffffff;
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.play-pause-button:active {
+  transform: scale(0.96);
+}
+
+.seek-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+}
+
+.seek-bar {
+  flex: 1;
+  height: 5px;
+  accent-color: #6366f1;
+  background: #3f3f52;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.time {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  min-width: 34px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}

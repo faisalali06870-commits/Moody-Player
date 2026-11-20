@@ -1,0 +1,205 @@
+[
+  {
+    "title": "Tauba Tauba",
+    "artist": "Karan Aujla",
+    "mood": "happy",
+    "audio": "https://aac.saavncdn.com/992/5d44da8bc1d78fb72d18b701d758fd1f_320.mp4",
+    "cover": "https://c.saavncdn.com/992/Bad-Newz-Hindi-2024-20250730113701-500x500.jpg"
+  },
+  {
+    "title": "Chaleya",
+    "artist": "Anirudh Ravichander, Arijit Singh, Shilpa Rao",
+    "mood": "happy",
+    "audio": "https://aac.saavncdn.com/047/d1366530468931703ac909e82a3ee788_320.mp4",
+    "cover": "https://c.saavncdn.com/047/Jawan-Hindi-2023-20230921190854-500x500.jpg"
+  },
+  {
+    "title": "Badtameez Dil",
+    "artist": "Pritam, Benny Dayal, Shefali Alvares",
+    "mood": "happy",
+    "audio": "https://aac.saavncdn.com/440/71ef535f42247d0ffcd3c9cfa04cdd60_320.mp4",
+    "cover": "https://c.saavncdn.com/440/Yeh-Jawaani-Hai-Deewani-2013-500x500.jpg"
+  },
+  {
+    "title": "Tum Hi Ho Bandhu",
+    "artist": "Pritam, Neeraj Shridhar, Kavita Seth",
+    "mood": "happy",
+    "audio": "https://aac.saavncdn.com/891/e256b2df33aa705ea336506ab77c4466_320.mp4",
+    "cover": "https://c.saavncdn.com/891/Cocktail-Hindi-2025-20260120201154-500x500.jpg"
+  },
+  {
+    "title": "Gallan Goodiyaan",
+    "artist": "Yashita Sharma, Manish Kumar Tipu, Farhan Akhtar, Shankar Mahadevan, Sukhwinder Singh",
+    "mood": "happy",
+    "audio": "https://aac.saavncdn.com/240/2a80b5248e85af6a6567011982bc5cfc_320.mp4",
+    "cover": "https://c.saavncdn.com/240/Dil-Dhadakne-Do-Hindi-2015-500x500.jpg"
+  },
+  {
+    "title": "Channa Mereya",
+    "artist": "Pritam, Arijit Singh, Pritam & Arijit Singh",
+    "mood": "sad",
+    "audio": "https://aac.saavncdn.com/597/6da0627cfcc4b937160f664841e4572d_320.mp4",
+    "cover": "https://c.saavncdn.com/257/Ae-Dil-Hai-Mushkil-Hindi-2016-500x500.jpg"
+  },
+  {
+    "title": "Tum Hi Ho",
+    "artist": "Arijit Singh",
+    "mood": "sad",
+    "audio": "https://aac.saavncdn.com/430/5c5ea5cc00e3bff45616013226f376fe_320.mp4",
+    "cover": "https://c.saavncdn.com/430/Aashiqui-2-Hindi-2013-500x500.jpg"
+  },
+  {
+    "title": "Agar Tum Saath Ho",
+    "artist": "Alka Yagnik, Arijit Singh",
+    "mood": "sad",
+    "audio": "https://aac.saavncdn.com/994/2e6b47719cea3e7c9f971a3f1ddc9b0a_320.mp4",
+    "cover": "https://c.saavncdn.com/994/Tamasha-Hindi-2015-500x500.jpg"
+  },
+  {
+    "title": "Bekhayali",
+    "artist": "Sachet Tandon",
+    "mood": "sad",
+    "audio": "https://aac.saavncdn.com/807/db5027c7f61ea05b4f9841bfc056e1c5_320.mp4",
+    "cover": "https://c.saavncdn.com/807/Kabir-Singh-Hindi-2019-20240131131003-500x500.jpg"
+  },
+  {
+    "title": "Kabira",
+    "artist": "Pritam, Tochi Raina, Rekha Bhardwaj",
+    "mood": "sad",
+    "audio": "https://aac.saavncdn.com/440/664097ba2ddb94e9a8c9e9527b3010ec_320.mp4",
+    "cover": "https://c.saavncdn.com/440/Yeh-Jawaani-Hai-Deewani-2013-500x500.jpg"
+  },
+  {
+    "title": "Iktara",
+    "artist": "Amit Trivedi, Kavita Seth, Amitabh Bhattacharya",
+    "mood": "neutral",
+    "audio": "https://aac.saavncdn.com/910/00bad068211036ad7a4c06d705c52bd4_320.mp4",
+    "cover": "https://c.saavncdn.com/910/Wake-Up-Sid-Hindi-2009-20190617160255-500x500.jpg"
+  },
+  {
+    "title": "Pee Loon",
+    "artist": "Pritam, Mohit Chauhan",
+    "mood": "neutral",
+    "audio": "https://aac.saavncdn.com/512/95ff31ff7ae963c417ec207d7de91f5c_320.mp4",
+    "cover": "https://c.saavncdn.com/512/Once-Upon-A-Time-In-Mumbaai-Hindi-2010-20241223141749-500x500.jpg"
+  },
+  {
+    "title": "Tum Se Hi",
+    "artist": "Pritam, Mohit Chauhan, Irshad Kamil",
+    "mood": "neutral",
+    "audio": "https://aac.saavncdn.com/223/7eddc0f9b56f110ae39a145752fabb34_320.mp4",
+    "cover": "https://c.saavncdn.com/223/Jab-We-Met-Hindi-2007-20231016162009-500x500.jpg"
+  },
+  {
+    "title": "Zehnaseeb",
+    "artist": "Vishal & Shekhar, Chinmayi, Shekhar Ravjiani",
+    "mood": "neutral",
+    "audio": "https://aac.saavncdn.com/479/1e4db1b4896f1022f1d1f4e32e5ff9e3_320.mp4",
+    "cover": "https://c.saavncdn.com/479/Hasee-Toh-Phasee-Hindi-2014-20260120201339-500x500.jpg"
+  },
+  {
+    "title": "Kun Faaya Kun",
+    "artist": "Javed Ali, Mohit Chauhan, A.R. Rahman",
+    "mood": "neutral",
+    "audio": "https://aac.saavncdn.com/274/aee250c500588f117ae5343688e12b42_320.mp4",
+    "cover": "https://c.saavncdn.com/408/Rockstar-Hindi-2011-20221212023139-500x500.jpg"
+  },
+  {
+    "title": "Kala Chashma",
+    "artist": "Amar Arshi, Badshah, Neha Kakkar, Indeep Bakshi, Prem &amp; Hardeep, Kumaar",
+    "mood": "surprised",
+    "audio": "https://aac.saavncdn.com/755/49ca868b379074a3b6bfd3cbc44ed23e_320.mp4",
+    "cover": "https://c.saavncdn.com/755/Dance-Party-Hits-Hindi-2026-20260928153001-500x500.jpg"
+  },
+  {
+    "title": "London Thumakda",
+    "artist": "Labh Janjua, Sonu Kakkar, Neha Kakkar",
+    "mood": "surprised",
+    "audio": "https://aac.saavncdn.com/125/1b203d1d1e51a1bd0035baa481cb1b13_320.mp4",
+    "cover": "https://c.saavncdn.com/125/Queen-2014-500x500.jpg"
+  },
+  {
+    "title": "What Jhumka ? (From \"Rocky Aur Rani Kii Prem Kahaani\")",
+    "artist": "Amitabh Bhattacharya, Pritam, Arijit Singh, Jonita Gandhi, Ranveer Singh",
+    "mood": "surprised",
+    "audio": "https://aac.saavncdn.com/001/a03631c9d383bac6ed57524bfb79ad96_320.mp4",
+    "cover": "https://c.saavncdn.com/001/Rocky-Aur-Rani-Kii-Prem-Kahaani-Hindi-2023-20250130073112-500x500.jpg"
+  },
+  {
+    "title": "Kar Gayi Chull",
+    "artist": "Badshah, Amaal Mallik, Fazilpuria, Sukriti Kakar, Neha Kakkar",
+    "mood": "surprised",
+    "audio": "https://aac.saavncdn.com/978/e7a6e97299ca851067e09e31fec18e6f_320.mp4",
+    "cover": "https://c.saavncdn.com/978/Kapoor-Sons-Since-1921--Hindi-2016-20180504172446-500x500.jpg"
+  },
+  {
+    "title": "Apna Time Aayega",
+    "artist": "Ranveer Singh, DIVINE, Dub Sharma",
+    "mood": "angry",
+    "audio": "https://aac.saavncdn.com/133/57ffaaec8e432d4eb678c09dc8930c79_320.mp4",
+    "cover": "https://c.saavncdn.com/133/Josh-High-Game-On-Bollywood-Energy-Hindi-2026-20260619182728-500x500.jpg"
+  },
+  {
+    "title": "Malhari",
+    "artist": "Sanjay Leela Bhansali, Vishal Dadlani, Prashant Ingole",
+    "mood": "angry",
+    "audio": "https://aac.saavncdn.com/808/c7ce4aa3c7b4d278fb83d92ebaf5b255_320.mp4",
+    "cover": "https://c.saavncdn.com/808/Bajirao-Mastani-Hindi-2025-20260120201154-500x500.jpg"
+  },
+  {
+    "title": "Zinda",
+    "artist": "Shankar-Ehsaan-Loy, Siddharth Mahadevan",
+    "mood": "angry",
+    "audio": "https://aac.saavncdn.com/575/cf7dbb23a4ba808632752d4f12f93ddb_320.mp4",
+    "cover": "https://c.saavncdn.com/575/Bhaag-Milkha-Bhaag-Hindi-2013-20260120201340-500x500.jpg"
+  },
+  {
+    "title": "Sultan",
+    "artist": "Sukhwinder Singh, Shadab Faridi",
+    "mood": "angry",
+    "audio": "https://aac.saavncdn.com/778/d974ed77e7afa4f1acb018e4e26c9946_320.mp4",
+    "cover": "https://c.saavncdn.com/778/Sultan-Hindi-2016-20190329150247-500x500.jpg"
+  },
+  {
+    "title": "Gumnaam Hai Koi",
+    "artist": "Jubin Nautiyal, Antara Mitra",
+    "mood": "fearful",
+    "audio": "https://aac.saavncdn.com/382/9f43b27beba80f3190e0d6591b2d301e_sar_320.mp4",
+    "cover": "https://c.saavncdn.com/382/Gumnaam-Hai-Koi-1920-London-Hindi-2016-500x500.jpg"
+  },
+  {
+    "title": "Kahin Deep Jale Kahin Dil",
+    "artist": "Lata Mangeshkar",
+    "mood": "fearful",
+    "audio": "https://aac.saavncdn.com/948/2cb84c5112037818e4289e81b05e1799_sar_320.mp4",
+    "cover": "https://c.saavncdn.com/948/Bees-Saal-Baad-1962-500x500.jpg"
+  },
+  {
+    "title": "Wafa Na Raas Aayee",
+    "artist": "Jubin Nautiyal, Meet Bros, Nikhil-Vinay",
+    "mood": "fearful",
+    "audio": "https://aac.saavncdn.com/067/a44887097b4119b07f0f02b45782702d_320.mp4",
+    "cover": "https://c.saavncdn.com/067/Wafa-Na-Raas-Aayee-Hindi-2021-20210423061001-500x500.jpg"
+  },
+  {
+    "title": "Tere Dwar Khule To Mere Bhagya",
+    "artist": "Mahendra Kapoor, Hemlata",
+    "mood": "disgusted",
+    "audio": "https://aac.saavncdn.com/977/c18e0be5bd12c248f990ff869ba2325b_320.mp4",
+    "cover": "https://c.saavncdn.com/977/Badrinath-Dham-Hindi-1980-500x500.jpg"
+  },
+  {
+    "title": "Jee Karda",
+    "artist": "Pritam, Labh Janjua, Suzie.Q, Mayur Puri",
+    "mood": "disgusted",
+    "audio": "https://aac.saavncdn.com/172/ef18e79280770b73aae6dd85bb1432e4_320.mp4",
+    "cover": "https://c.saavncdn.com/172/Chatpate-Gaane-Punjabi-2026-20261022104611-500x500.jpg"
+  },
+  {
+    "title": "Saadda Haq (Featuring Orianthi Panagaris On Guitars)",
+    "artist": "Clinton Cerejo, Mohit Chauhan",
+    "mood": "disgusted",
+    "audio": "https://aac.saavncdn.com/274/ec39b6b040265fdf0c97080bad3b9e86_320.mp4",
+    "cover": "https://c.saavncdn.com/408/Rockstar-Hindi-2011-20221212023139-500x500.jpg"
+  }
+]
