@@ -1,12 +1,17 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { getCuratedYouTubeTracks, extractYouTubeId } from "../utils/youtubeUtils";
+import {
+  getCuratedYouTubeTracks,
+  extractYouTubeId,
+  YOUTUBE_CATEGORIES,
+} from "../utils/youtubeUtils";
 import { MOOD_DETAILS } from "../data/songsData";
 import "./YouTubePlayer.css";
 
 const YouTubePlayer = ({ mood = "neutral", onOpenAddSong }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [songs, setSongs] = useState(() => getCuratedYouTubeTracks(mood));
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [activeVideo, setActiveVideo] = useState(() => {
     const list = getCuratedYouTubeTracks(mood);
     return list.length > 0 ? list[0] : null;
@@ -21,6 +26,7 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong }) => {
   // Whenever mood changes, fetch songs for this mood
   useEffect(() => {
     fetchMoodSongs(cleanMood);
+    setSelectedCategory("all");
   }, [cleanMood]);
 
   const fetchMoodSongs = async (targetMood) => {
@@ -28,9 +34,9 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong }) => {
     try {
       // 1. Try local custom API key if user provided one
       if (apiKey && apiKey.trim()) {
-        const query = `${targetMood} bollywood songs`;
+        const query = `${targetMood} bollywood pakistani classic songs`;
         const res = await axios.get(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=12&q=${encodeURIComponent(
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=15&q=${encodeURIComponent(
             query
           )}&type=video&videoCategoryId=10&key=${apiKey.trim()}`
         );
@@ -41,6 +47,8 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong }) => {
             artist: it.snippet.channelTitle,
             thumbnail: it.snippet.thumbnails?.high?.url || it.snippet.thumbnails?.medium?.url,
             mood: targetMood,
+            category: "hindustani",
+            tag: "YouTube Search 🔴",
             source: "youtube",
           }));
           setSongs(items);
@@ -51,9 +59,10 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong }) => {
       }
 
       // 2. Try backend YouTube route
-      const backendRes = await axios.get(`http://localhost:3000/api/youtube/search?mood=${targetMood}`, {
-        timeout: 4000,
-      });
+      const backendRes = await axios.get(
+        `http://localhost:3000/api/youtube/search?mood=${targetMood}`,
+        { timeout: 4000 }
+      );
       if (backendRes.data?.songs?.length > 0) {
         setSongs(backendRes.data.songs);
         setActiveVideo(backendRes.data.songs[0]);
@@ -64,7 +73,7 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong }) => {
       // Fallback
     }
 
-    // 3. Fallback to curated YouTube tracks
+    // 3. Fallback to rich curated Hindustani & Pakistani tracks
     const curated = getCuratedYouTubeTracks(targetMood);
     setSongs(curated);
     if (curated.length > 0) setActiveVideo(curated[0]);
@@ -84,9 +93,11 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong }) => {
       const directVideo = {
         videoId: directId,
         title: "YouTube Video: " + directId,
-        artist: "YouTube",
+        artist: "YouTube Classic",
         thumbnail: `https://img.youtube.com/vi/${directId}/hqdefault.jpg`,
         mood: cleanMood,
+        category: "all",
+        tag: "Direct Link 🔗",
         source: "youtube",
       };
       setSongs((prev) => [directVideo, ...prev.filter((v) => v.videoId !== directId)]);
@@ -112,6 +123,8 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong }) => {
             artist: it.snippet.channelTitle,
             thumbnail: it.snippet.thumbnails?.high?.url || it.snippet.thumbnails?.medium?.url,
             mood: cleanMood,
+            category: "all",
+            tag: "YouTube Search 🔴",
             source: "youtube",
           }));
           setSongs(items);
@@ -123,7 +136,9 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong }) => {
 
       // Backend route search
       const res = await axios.get(
-        `http://localhost:3000/api/youtube/search?q=${encodeURIComponent(searchQuery)}&mood=${cleanMood}`,
+        `http://localhost:3000/api/youtube/search?q=${encodeURIComponent(
+          searchQuery
+        )}&mood=${cleanMood}`,
         { timeout: 4000 }
       );
       if (res.data?.songs?.length > 0) {
@@ -131,7 +146,7 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong }) => {
         setActiveVideo(res.data.songs[0]);
       }
     } catch {
-      // If search fails, filter current songs by query
+      // If search fails, search inside current songs by query
       const filtered = songs.filter(
         (s) =>
           s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -151,16 +166,22 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong }) => {
     localStorage.setItem("moody_yt_api_key", key);
   };
 
+  // Filter songs based on selected category
+  const displayedSongs = songs.filter((s) => {
+    if (selectedCategory === "all") return true;
+    return s.category === selectedCategory;
+  });
+
   return (
     <div className="youtube-player-deck">
       {/* Mood Header */}
       <div className="yt-mood-banner">
         <div className="yt-mood-title">
           <span className="yt-badge">
-            <i className="ri-youtube-fill"></i> YouTube Music
+            <i className="ri-youtube-fill"></i> Classic Music
           </span>
           <h3>
-            {moodInfo.emoji} {moodInfo.label} Bollywood Hits
+            {moodInfo.emoji} {moodInfo.label} Pakistani & Hindustani Hits
           </h3>
         </div>
         <button
@@ -200,7 +221,7 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong }) => {
           <i className="ri-search-line yt-search-icon"></i>
           <input
             type="text"
-            placeholder="Search YouTube songs or paste any video link..."
+            placeholder="Search Pakistani, Coke Studio, Rafi, Kishore, Atif..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -222,47 +243,74 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong }) => {
         </button>
       </form>
 
-      {/* Quick Search Chips */}
+      {/* Classic Genres Filter Bar */}
+      <div className="yt-category-tabs">
+        {YOUTUBE_CATEGORIES.map((cat) => {
+          const isActive = selectedCategory === cat.id;
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              className={`yt-cat-btn ${isActive ? "active" : ""}`}
+              onClick={() => setSelectedCategory(cat.id)}
+            >
+              <i className={cat.icon}></i> {cat.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Quick Search Tags */}
       <div className="yt-quick-tags">
         <button
           type="button"
           className="yt-tag"
           onClick={() => {
-            setSearchQuery(`${cleanMood} bollywood hits`);
+            setSearchQuery("Coke Studio Pakistan best songs");
             handleSearch();
           }}
         >
-          {moodInfo.emoji} {cleanMood} Hits
+          🇵🇰 Coke Studio
         </button>
         <button
           type="button"
           className="yt-tag"
           onClick={() => {
-            setSearchQuery("Arijit Singh romantic hits");
+            setSearchQuery("Kishore Kumar Mohammad Rafi evergreen hits");
             handleSearch();
           }}
         >
-          ❤️ Arijit Singh
+          📻 Retro Kishore & Rafi
         </button>
         <button
           type="button"
           className="yt-tag"
           onClick={() => {
-            setSearchQuery("Bollywood Party Mashup");
+            setSearchQuery("Nusrat Fateh Ali Khan qawwali");
             handleSearch();
           }}
         >
-          🎉 Party Mashup
+          🕊️ Nusrat Qawwali
         </button>
         <button
           type="button"
           className="yt-tag"
           onClick={() => {
-            setSearchQuery("Bollywood Lo-fi Relax");
+            setSearchQuery("Jagjit Singh best ghazals");
             handleSearch();
           }}
         >
-          🌙 Lo-fi Chill
+          💫 Jagjit Singh Ghazals
+        </button>
+        <button
+          type="button"
+          className="yt-tag"
+          onClick={() => {
+            setSearchQuery("Atif Aslam evergreen romantic hits");
+            handleSearch();
+          }}
+        >
+          🎤 Atif Aslam
         </button>
       </div>
 
@@ -281,7 +329,12 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong }) => {
           <div className="yt-screen-meta">
             <div className="yt-screen-text">
               <h4 title={activeVideo.title}>{activeVideo.title}</h4>
-              <p>{activeVideo.artist || "YouTube Artist"}</p>
+              <p>
+                {activeVideo.artist || "Classic Artist"}
+                {activeVideo.tag && (
+                  <span className="yt-screen-badge">{activeVideo.tag}</span>
+                )}
+              </p>
             </div>
             <button
               className="yt-add-btn"
@@ -307,66 +360,81 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong }) => {
       <div className="yt-queue-card">
         <div className="yt-queue-header">
           <h4>
-            <i className="ri-play-list-2-fill"></i> YouTube Tracks ({songs.length})
+            <i className="ri-play-list-2-fill"></i> Classic Tracks ({displayedSongs.length})
           </h4>
           <span className="yt-queue-sub">Click to play video or tap + to save</span>
         </div>
 
         <div className="yt-queue-list">
-          {songs.map((song, idx) => {
-            const isPlaying = activeVideo?.videoId === song.videoId;
-            return (
-              <div
-                key={song.videoId || idx}
-                className={`yt-queue-item ${isPlaying ? "active" : ""}`}
-                onClick={() => setActiveVideo(song)}
+          {displayedSongs.length === 0 ? (
+            <div className="yt-empty-box">
+              <p>No tracks in this category for {moodInfo.label}.</p>
+              <button
+                className="yt-tag"
+                onClick={() => setSelectedCategory("all")}
               >
-                <div className="yt-thumb-wrap">
-                  <img
-                    src={
-                      song.thumbnail ||
-                      `https://img.youtube.com/vi/${song.videoId}/hqdefault.jpg`
-                    }
-                    alt={song.title}
-                    className="yt-thumb"
-                  />
-                  {isPlaying ? (
-                    <div className="yt-playing-overlay">
-                      <i className="ri-equalizer-fill"></i>
-                    </div>
-                  ) : (
-                    <div className="yt-play-overlay">
-                      <i className="ri-play-fill"></i>
-                    </div>
-                  )}
-                </div>
-
-                <div className="yt-meta">
-                  <h5 title={song.title}>{song.title}</h5>
-                  <p>{song.artist}</p>
-                </div>
-
-                <button
-                  type="button"
-                  className="yt-item-add"
-                  title="Add to Moody Player"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onOpenAddSong({
-                      title: song.title,
-                      artist: song.artist,
-                      videoId: song.videoId,
-                      thumbnail: song.thumbnail,
-                      mood: cleanMood,
-                      source: "youtube",
-                    });
-                  }}
+                Show All {songs.length} Tracks
+              </button>
+            </div>
+          ) : (
+            displayedSongs.map((song, idx) => {
+              const isPlaying = activeVideo?.videoId === song.videoId;
+              return (
+                <div
+                  key={song.videoId || idx}
+                  className={`yt-queue-item ${isPlaying ? "active" : ""}`}
+                  onClick={() => setActiveVideo(song)}
                 >
-                  <i className="ri-add-line"></i>
-                </button>
-              </div>
-            );
-          })}
+                  <div className="yt-thumb-wrap">
+                    <img
+                      src={
+                        song.thumbnail ||
+                        `https://img.youtube.com/vi/${song.videoId}/hqdefault.jpg`
+                      }
+                      alt={song.title}
+                      className="yt-thumb"
+                    />
+                    {isPlaying ? (
+                      <div className="yt-playing-overlay">
+                        <i className="ri-equalizer-fill"></i>
+                      </div>
+                    ) : (
+                      <div className="yt-play-overlay">
+                        <i className="ri-play-fill"></i>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="yt-meta">
+                    <div className="yt-meta-row">
+                      <h5 title={song.title}>{song.title}</h5>
+                      {song.tag && <span className="yt-item-tag">{song.tag}</span>}
+                    </div>
+                    <p>{song.artist}</p>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="yt-item-add"
+                    title="Add to Moody Player"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOpenAddSong({
+                        title: song.title,
+                        artist: song.artist,
+                        videoId: song.videoId,
+                        thumbnail: song.thumbnail,
+                        mood: cleanMood,
+                        source: "youtube",
+                      });
+                    }}
+                  >
+                    <i className="ri-add-line"></i>
+                  </button>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
     </div>
