@@ -563,3 +563,214 @@
   align-items: center;
   gap: 0.75rem;
 }
+
+/* YouTube Audio Mode & Music Player UI */
+
+.yt-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.yt-mode-toggle-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #f8fafc;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: all 0.2s ease;
+}
+
+.yt-mode-toggle-btn:hover {
+  background: rgba(99, 102, 241, 0.3);
+  border-color: #6366f1;
+}
+
+.yt-audio-player-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.25rem 1rem 0.75rem 1rem;
+  background: radial-gradient(circle at center, rgba(30, 30, 50, 0.5) 0%, rgba(15, 15, 25, 0.9) 100%);
+}
+
+.yt-music-art-stage {
+  position: relative;
+  width: 170px;
+  height: 135px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.65rem;
+}
+
+.yt-vinyl-disc {
+  position: absolute;
+  top: 5px;
+  right: 18px;
+  width: 125px;
+  height: 125px;
+  border-radius: 50%;
+  background: #09090c;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.8);
+  border: 2px solid #1c1c24;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s ease;
+  z-index: 1;
+}
+
+.yt-vinyl-disc.spinning {
+  transform: translateX(28px) rotate(360deg);
+  animation: spinVinyl 3.5s linear infinite;
+}
+
+@keyframes spinVinyl {
+  from { transform: translateX(28px) rotate(0deg); }
+  to { transform: translateX(28px) rotate(360deg); }
+}
+
+.yt-vinyl-grooves {
+  width: 82%;
+  height: 82%;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yt-vinyl-center {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #6366f1;
+}
+
+.yt-cover-square {
+  position: relative;
+  width: 135px;
+  height: 135px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  z-index: 2;
+  background: #111;
+}
+
+.yt-cover-pic {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.yt-live-badge {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(16, 185, 129, 0.9);
+  color: #fff;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.yt-audio-controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.4rem;
+}
+
+.yt-play-toggle-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  border: none;
+  color: #ffffff;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.45);
+  transition: all 0.2s ease;
+}
+
+.yt-play-toggle-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+}
+
+.yt-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.yt-heart-btn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.yt-heart-btn:hover {
+  color: #ef4444;
+  transform: scale(1.15);
+}
+
+.yt-heart-btn.liked {
+  color: #ef4444;
+}
+
+.yt-action-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.yt-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.yt-item-heart {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 1.05rem;
+  cursor: pointer;
+  padding: 0.15rem;
+  transition: all 0.2s ease;
+}
+
+.yt-item-heart:hover {
+  color: #ef4444;
+  transform: scale(1.15);
+}
+
+.yt-item-heart.liked {
+  color: #ef4444;
+}

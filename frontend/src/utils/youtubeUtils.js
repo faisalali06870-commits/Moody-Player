@@ -598,3 +598,96 @@ export function getCuratedYouTubeTracks(mood) {
   const cleanMood = (mood || "neutral").toLowerCase().trim();
   return CURATED_YOUTUBE_SONGS[cleanMood] || CURATED_YOUTUBE_SONGS.neutral;
 }
+
+import axios from "axios";
+
+// Universal World Song Searcher (searches any song on YouTube/World)
+export async function searchWorldSongs(query, apiKey = "") {
+  if (!query || !query.trim()) return [];
+
+  // 1. Direct YouTube link or 11-char ID
+  const directId = extractYouTubeId(query);
+  if (directId) {
+    return [
+      {
+        videoId: directId,
+        title: "YouTube Video: " + directId,
+        artist: "YouTube",
+        thumbnail: `https://img.youtube.com/vi/${directId}/hqdefault.jpg`,
+        source: "youtube",
+        tag: "Direct Link 🔗",
+      },
+    ];
+  }
+
+  // 2. Try Backend live YouTube search engine
+  try {
+    const res = await axios.get(
+      `http://localhost:3000/api/youtube/search?q=${encodeURIComponent(query)}`,
+      { timeout: 3500 }
+    );
+    if (res.data?.songs?.length > 0) {
+      return res.data.songs;
+    }
+  } catch (e) {
+    // Backend offline / not reachable
+  }
+
+  // 3. Try YouTube Data API v3 if key available
+  if (apiKey && apiKey.trim()) {
+    try {
+      const res = await axios.get(
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${encodeURIComponent(
+          query
+        )}&type=video&key=${apiKey.trim()}`
+      );
+      if (res.data?.items?.length > 0) {
+        return res.data.items.map((it) => ({
+          videoId: it.id.videoId,
+          title: it.snippet.title,
+          artist: it.snippet.channelTitle,
+          thumbnail:
+            it.snippet.thumbnails?.high?.url ||
+            it.snippet.thumbnails?.medium?.url ||
+            `https://img.youtube.com/vi/${it.id.videoId}/hqdefault.jpg`,
+          source: "youtube",
+          tag: "YouTube Search 🔴",
+        }));
+      }
+    } catch (e) {
+      console.warn("YouTube API search error:", e);
+    }
+  }
+
+  // 4. Try public mirror for live YouTube results
+  const mirrors = [
+    "https://inv.nadeko.net/api/v1/search?q=",
+    "https://invidious.jing.rocks/api/v1/search?q=",
+  ];
+  for (const mirror of mirrors) {
+    try {
+      const res = await axios.get(
+        `${mirror}${encodeURIComponent(query)}&type=video`,
+        { timeout: 3000 }
+      );
+      if (Array.isArray(res.data) && res.data.length > 0) {
+        return res.data
+          .filter((v) => v.videoId)
+          .map((v) => ({
+            videoId: v.videoId,
+            title: v.title,
+            artist: v.author,
+            thumbnail:
+              v.videoThumbnails?.[0]?.url ||
+              `https://img.youtube.com/vi/${v.videoId}/hqdefault.jpg`,
+            source: "youtube",
+            tag: "World Search 🌍",
+          }));
+      }
+    } catch {
+      // Continue
+    }
+  }
+
+  return [];
+}

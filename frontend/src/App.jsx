@@ -212,6 +212,8 @@ function App() {
             <YouTubePlayer
               mood={currentMood}
               onOpenAddSong={handleOpenAddSong}
+              onOpenPlaylistModal={handleOpenPlaylistModal}
+              onToast={showToast}
             />
           )}
 

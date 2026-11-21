@@ -20,6 +20,64 @@ function extractYouTubeId(urlOrId) {
   return match ? match[1] : null;
 }
 
+// Live YouTube Search Engine (Searches any song in the world without requiring API keys)
+async function searchYouTubeLive(query) {
+  try {
+    const res = await fetch(
+      "https://www.youtube.com/results?search_query=" + encodeURIComponent(query),
+      {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          "Accept-Language": "en-US,en;q=0.9,hi;q=0.8",
+        },
+      }
+    );
+    if (!res.ok) return [];
+    const html = await res.text();
+    const match = html.match(/ytInitialData[ ]*=[ ]*({.+?});<\/script>/);
+    if (!match) return [];
+    const data = JSON.parse(match[1]);
+    const sections =
+      data.contents?.twoColumnSearchResultsRenderer?.primaryContents
+        ?.sectionListRenderer?.contents || [];
+    const results = [];
+    for (const section of sections) {
+      const items = section.itemSectionRenderer?.contents || [];
+      for (const item of items) {
+        const v = item.videoRenderer;
+        if (v && v.videoId && v.title) {
+          const title =
+            v.title?.runs?.map((r) => r.text).join("") ||
+            v.title?.simpleText ||
+            "Unknown Title";
+          const artist =
+            v.ownerText?.runs?.map((r) => r.text).join("") ||
+            "YouTube Artist";
+          const thumbnail =
+            v.thumbnail?.thumbnails?.slice(-1)[0]?.url ||
+            `https://img.youtube.com/vi/${v.videoId}/hqdefault.jpg`;
+
+          results.push({
+            videoId: v.videoId,
+            title: title.replace(/&amp;/g, "&").replace(/&#39;/g, "'").replace(/&quot;/g, '"'),
+            artist: artist,
+            thumbnail: thumbnail,
+            source: "youtube",
+            tag: "World Search 🌍",
+          });
+          if (results.length >= 20) break;
+        }
+      }
+      if (results.length >= 20) break;
+    }
+    return results;
+  } catch (e) {
+    console.error("Live YouTube search error:", e.message);
+    return [];
+  }
+}
+
 // 1. Create / Add New Song (File, Audio Link, or YouTube)
 router.post("/songs", upload.single("audio"), async (req, res) => {
   try {
@@ -112,21 +170,32 @@ router.delete("/songs/:id", async (req, res) => {
   }
 });
 
-// 4. YouTube API Search / Curated Mood Search
+// 4. Live Universal YouTube Search (Searches any song in the world)
 router.get("/api/youtube/search", async (req, res) => {
   try {
     const { q, mood } = req.query;
     const cleanMood = (mood || "neutral").toLowerCase().trim();
-    const query = q && q.trim() ? q.trim() : `${cleanMood} bollywood songs`;
+    const query = q && q.trim() ? q.trim() : `${cleanMood} classic songs`;
     const apiKey = process.env.YOUTUBE_API_KEY;
 
-    // If API key is present, attempt live YouTube Data API v3 search
+    // First attempt: Live YouTube Search Engine (Searches whole world without key)
+    const liveResults = await searchYouTubeLive(query);
+    if (liveResults && liveResults.length > 0) {
+      return res.json({
+        success: true,
+        source: "live_youtube",
+        count: liveResults.length,
+        songs: liveResults,
+      });
+    }
+
+    // Second attempt: YouTube Data API v3 if API key is present
     if (apiKey && apiKey.trim() && !apiKey.startsWith("your_")) {
       try {
-        const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=15&q=${encodeURIComponent(
+        const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${encodeURIComponent(
           query
         )}&type=video&videoCategoryId=10&key=${apiKey.trim()}`;
-        
+
         const response = await fetch(apiUrl);
         if (response.ok) {
           const data = await response.json();
@@ -140,6 +209,7 @@ router.get("/api/youtube/search", async (req, res) => {
               item.snippet.thumbnails?.default?.url,
             mood: cleanMood,
             source: "youtube",
+            tag: "YouTube API 🔴",
           }));
 
           return res.json({
@@ -150,18 +220,15 @@ router.get("/api/youtube/search", async (req, res) => {
           });
         }
       } catch (ytErr) {
-        console.warn("YouTube API search failed, falling back to curated:", ytErr.message);
+        console.warn("YouTube API search failed:", ytErr.message);
       }
     }
 
-    // Graceful fallback: Curated Bollywood YouTube Tracks for that mood
+    // Third attempt: Curated Pakistani & Hindustani classic collection
     const curated = getCuratedYouTubeSongs(cleanMood);
     return res.json({
       success: true,
       source: "curated",
-      message: apiKey
-        ? "YouTube API call was unavailable, showing curated tracks"
-        : "YOUTUBE_API_KEY not configured, showing top curated YouTube tracks",
       count: curated.length,
       songs: curated,
     });
