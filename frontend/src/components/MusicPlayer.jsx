@@ -2,8 +2,17 @@ import { useState, useRef, useEffect } from "react";
 import "./MusicPlayer.css";
 import { MOOD_DETAILS } from "../data/songsData";
 import { extractYouTubeId } from "../utils/youtubeUtils";
+import { toggleLikeSong, isSongLiked } from "../utils/playlistUtils";
+import { searchLibrarySongs } from "../utils/libraryUtils";
 
-const MusicPlayer = ({ songs, currentMood, onOpenAddSong }) => {
+const MusicPlayer = ({
+  songs,
+  currentMood,
+  onOpenAddSong,
+  onOpenPlaylistModal,
+  onToast,
+  onPlaySong,
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -12,7 +21,8 @@ const MusicPlayer = ({ songs, currentMood, onOpenAddSong }) => {
   const [isMuted, setIsMuted] = useState(false);
   const [isShuffle, setIsShuffle] = useState(false);
   const [isLoop, setIsLoop] = useState(false);
-  const [showVideo, setShowVideo] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [likedMap, setLikedMap] = useState({});
 
   const audioRef = useRef(null);
 
@@ -24,7 +34,7 @@ const MusicPlayer = ({ songs, currentMood, onOpenAddSong }) => {
   const moodKey = (currentMood || "neutral").toLowerCase();
   const moodInfo = MOOD_DETAILS[moodKey] || MOOD_DETAILS.neutral;
 
-  // Check if current track is a YouTube video song
+  // Check if current track is a YouTube audio stream
   const isYouTube =
     currentSong?.source === "youtube" ||
     Boolean(currentSong?.youtubeId) ||
@@ -33,14 +43,38 @@ const MusicPlayer = ({ songs, currentMood, onOpenAddSong }) => {
   const ytVideoId =
     currentSong?.youtubeId || (isYouTube ? extractYouTubeId(currentSong?.audio) : null);
 
-  // Reset index when mood changes
+  // Check liked status
+  const checkIsLiked = (song) => {
+    if (!song) return false;
+    const sId = song._id || song.videoId;
+    if (likedMap[sId] !== undefined) return likedMap[sId];
+    return isSongLiked(sId, song.title);
+  };
+
+  const handleToggleLike = (song, e) => {
+    if (e) e.stopPropagation();
+    if (!song) return;
+    const isNowLiked = toggleLikeSong(song);
+    const sId = song._id || song.videoId || song.title;
+    setLikedMap((prev) => ({ ...prev, [sId]: isNowLiked }));
+
+    if (onToast) {
+      onToast(
+        isNowLiked
+          ? `❤️ Added "${song.title}" to Liked Songs!`
+          : `Removed "${song.title}" from Liked Songs`
+      );
+    }
+  };
+
+  // Reset index when songs array changes
   useEffect(() => {
     setCurrentIndex(0);
     setCurrentTime(0);
     if (audioRef.current) {
       audioRef.current.currentTime = 0;
     }
-  }, [songs, currentMood]);
+  }, [songs]);
 
   // Sync volume with audio element
   useEffect(() => {
@@ -151,6 +185,11 @@ const MusicPlayer = ({ songs, currentMood, onOpenAddSong }) => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
+  // Filter queue songs by search query if user typed something
+  const displayedSongs = searchQuery.trim()
+    ? searchLibrarySongs(searchQuery)
+    : songs;
+
   if (!songs || songs.length === 0) {
     return (
       <div className="player-wrapper">
@@ -182,7 +221,7 @@ const MusicPlayer = ({ songs, currentMood, onOpenAddSong }) => {
         <div className="mood-info">
           <span className="mood-emoji">{moodInfo.emoji}</span>
           <div className="mood-text">
-            <h3 style={{ color: moodInfo.color }}>{moodInfo.label} Mood Bollywood</h3>
+            <h3 style={{ color: moodInfo.color }}>{moodInfo.label} Mood Audio</h3>
             <p>{moodInfo.quote}</p>
           </div>
         </div>
@@ -202,7 +241,7 @@ const MusicPlayer = ({ songs, currentMood, onOpenAddSong }) => {
         </div>
       </div>
 
-      {/* Hidden Native Audio Element (For MP3s) */}
+      {/* Hidden Native Audio Element (For direct MP3s) */}
       {!isYouTube && (
         <audio
           ref={audioRef}
@@ -213,7 +252,24 @@ const MusicPlayer = ({ songs, currentMood, onOpenAddSong }) => {
         />
       )}
 
-      {/* Glassmorphic Master Audio Deck */}
+      {/* Hidden YouTube Audio Bridge (Streams audio with ZERO video UI) */}
+      {isYouTube && isPlaying && ytVideoId && (
+        <iframe
+          src={`https://www.youtube.com/embed/${ytVideoId}?autoplay=1&enablejsapi=1`}
+          title="YouTube Audio Stream"
+          allow="autoplay"
+          style={{
+            position: "absolute",
+            width: "1px",
+            height: "1px",
+            opacity: 0,
+            pointerEvents: "none",
+            border: "none",
+          }}
+        />
+      )}
+
+      {/* Glassmorphic Classic Music Player Deck */}
       <div className="master-glass-card" style={{ borderColor: `${moodInfo.color}35` }}>
         {/* Dynamic Glow */}
         <div
@@ -221,88 +277,85 @@ const MusicPlayer = ({ songs, currentMood, onOpenAddSong }) => {
           style={{ backgroundColor: moodInfo.color }}
         ></div>
 
-        {/* Visual Stage: YouTube Player OR Spinning Vinyl Album Art */}
+        {/* Visual Stage: Classic Album Cover & Rotating Vinyl Disc */}
         <div className="track-showcase">
-          {isYouTube && isPlaying && ytVideoId && showVideo ? (
-            <div className="master-yt-player-box">
-              <iframe
-                src={`https://www.youtube.com/embed/${ytVideoId}?autoplay=1&enablejsapi=1`}
-                title={currentSong.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="master-yt-iframe"
-              />
-              <button
-                className="yt-toggle-btn"
-                onClick={() => setShowVideo(false)}
-                title="Switch to Album Art Mode"
-              >
-                <i className="ri-image-2-line"></i> Art View
-              </button>
-            </div>
-          ) : (
-            <div className={`album-art-stage ${isPlaying ? "playing" : ""}`}>
-              {/* Spinning Vinyl Disc */}
-              <div className={`vinyl-disc ${isPlaying ? "spinning" : ""}`}>
-                <div className="vinyl-grooves">
-                  <div
-                    className="vinyl-center"
-                    style={{ backgroundColor: moodInfo.color }}
-                  >
-                    <div className="spindle-hole"></div>
-                  </div>
+          <div className={`album-art-stage ${isPlaying ? "playing" : ""}`}>
+            {/* Spinning Vinyl Disc */}
+            <div className={`vinyl-disc ${isPlaying ? "spinning" : ""}`}>
+              <div className="vinyl-grooves">
+                <div
+                  className="vinyl-center"
+                  style={{ backgroundColor: moodInfo.color }}
+                >
+                  <div className="spindle-hole"></div>
                 </div>
               </div>
+            </div>
 
-              {/* Album Cover */}
-              <div className="cover-box">
-                <img
-                  src={
-                    currentSong?.cover ||
-                    (ytVideoId
-                      ? `https://img.youtube.com/vi/${ytVideoId}/hqdefault.jpg`
-                      : "https://c.saavncdn.com/430/Aashiqui-2-Hindi-2013-500x500.jpg")
-                  }
-                  alt={currentSong?.title}
-                  className="cover-img"
-                />
+            {/* Square Album Cover */}
+            <div className="cover-box">
+              <img
+                src={
+                  currentSong?.cover ||
+                  (ytVideoId
+                    ? `https://img.youtube.com/vi/${ytVideoId}/hqdefault.jpg`
+                    : "https://c.saavncdn.com/430/Aashiqui-2-Hindi-2013-500x500.jpg")
+                }
+                alt={currentSong?.title}
+                className="cover-img"
+              />
 
-                {isYouTube && (
-                  <div className="yt-video-indicator">
-                    <i className="ri-youtube-fill"></i> YouTube
+              {isPlaying && (
+                <div className="playing-badge">
+                  <div className="mini-wave">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                   </div>
-                )}
-
-                {isPlaying && (
-                  <div className="playing-badge">
-                    <div className="mini-wave">
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                    </div>
-                    <span>NOW PLAYING</span>
-                  </div>
-                )}
-              </div>
-
-              {isYouTube && isPlaying && (
-                <button
-                  className="yt-toggle-btn overlay"
-                  onClick={() => setShowVideo(true)}
-                  title="Switch to Video Mode"
-                >
-                  <i className="ri-tv-line"></i> Video
-                </button>
+                  <span>NOW PLAYING</span>
+                </div>
               )}
             </div>
-          )}
+          </div>
 
+          {/* Track Meta & Quick Actions */}
           <div className="track-meta">
-            <h2>{currentSong?.title}</h2>
+            <div className="track-title-row">
+              <h2 title={currentSong?.title}>{currentSong?.title}</h2>
+              <div className="track-quick-btns">
+                <button
+                  className={`track-heart-btn ${checkIsLiked(currentSong) ? "liked" : ""}`}
+                  onClick={(e) => handleToggleLike(currentSong, e)}
+                  title={
+                    checkIsLiked(currentSong)
+                      ? "Remove from Liked Songs"
+                      : "Add to Liked Songs ❤️"
+                  }
+                >
+                  <i
+                    className={
+                      checkIsLiked(currentSong) ? "ri-heart-fill" : "ri-heart-line"
+                    }
+                  ></i>
+                </button>
+                {onOpenPlaylistModal && (
+                  <button
+                    className="track-pl-btn"
+                    onClick={() => onOpenPlaylistModal(currentSong)}
+                    title="Add to Custom Playlist 📁"
+                  >
+                    <i className="ri-folder-add-line"></i>
+                  </button>
+                )}
+              </div>
+            </div>
+
             <p>
               {currentSong?.artist}
-              {isYouTube && <span className="yt-meta-badge">YouTube</span>}
-              {currentSong?.isCustom && <span className="custom-meta-badge">Added by You</span>}
+              {isYouTube && <span className="yt-meta-badge">Classic Audio 🎙️</span>}
+              {currentSong?.tag && (
+                <span className="custom-meta-badge">{currentSong.tag}</span>
+              )}
             </p>
           </div>
         </div>
@@ -320,15 +373,15 @@ const MusicPlayer = ({ songs, currentMood, onOpenAddSong }) => {
             disabled={isYouTube}
             style={{
               background: isYouTube
-                ? `linear-gradient(to right, #ef4444 100%, #252538 100%)`
+                ? `linear-gradient(to right, ${moodInfo.color} 100%, #252538 100%)`
                 : `linear-gradient(to right, ${moodInfo.color} ${
                     (currentTime / (duration || 1)) * 100
                   }%, #252538 ${(currentTime / (duration || 1)) * 100}%)`,
             }}
           />
           <div className="time-row">
-            <span>{isYouTube ? "YouTube Stream" : formatTime(currentTime)}</span>
-            <span>{isYouTube ? "HD" : formatTime(duration)}</span>
+            <span>{isYouTube ? "Streaming Audio" : formatTime(currentTime)}</span>
+            <span>{isYouTube ? "HD Stereo" : formatTime(duration)}</span>
           </div>
         </div>
 
@@ -357,12 +410,8 @@ const MusicPlayer = ({ songs, currentMood, onOpenAddSong }) => {
             className="main-play-btn"
             onClick={togglePlayPause}
             style={{
-              background: isYouTube
-                ? "linear-gradient(135deg, #ef4444, #991b1b)"
-                : `linear-gradient(135deg, ${moodInfo.color}, #4f46e5)`,
-              boxShadow: isYouTube
-                ? "0 8px 25px rgba(239, 68, 68, 0.55)"
-                : `0 8px 25px ${moodInfo.color}65`,
+              background: `linear-gradient(135deg, ${moodInfo.color}, #4f46e5)`,
+              boxShadow: `0 8px 25px ${moodInfo.color}65`,
             }}
             title={isPlaying ? "Pause" : "Play"}
           >
@@ -418,15 +467,18 @@ const MusicPlayer = ({ songs, currentMood, onOpenAddSong }) => {
         </div>
       </div>
 
-      {/* Playlist Queue Section (15+ Songs in List) */}
+      {/* Playlist Queue Section & Universal Search */}
       <div className="queue-glass-card">
         <div className="queue-header">
           <div className="queue-header-left">
             <h3>
-              <i className="ri-play-list-2-fill"></i> All {songs.length} Tracks ({moodInfo.label})
+              <i className="ri-play-list-2-fill"></i>{" "}
+              {searchQuery.trim()
+                ? `Search Results (${displayedSongs.length})`
+                : `All ${songs.length} Tracks (${moodInfo.label})`}
             </h3>
-            <span style={{ fontSize: "0.74rem", color: "#64748b" }}>
-              Click any track to play immediately
+            <span style={{ fontSize: "0.72rem", color: "#64748b" }}>
+              Click any song to play instantly or tap ❤️ / 📁 to save
             </span>
           </div>
 
@@ -441,87 +493,124 @@ const MusicPlayer = ({ songs, currentMood, onOpenAddSong }) => {
           )}
         </div>
 
-        <div className="queue-list">
-          {songs.map((song, idx) => {
-            const isCurrent = idx === safeIndex;
-            const songIsYt =
-              song.source === "youtube" ||
-              Boolean(song.youtubeId) ||
-              Boolean(extractYouTubeId(song.audio));
-            const ytId =
-              song.youtubeId || (songIsYt ? extractYouTubeId(song.audio) : null);
+        {/* Search Bar Across Entire 150+ Library */}
+        <div className="queue-search-input-box">
+          <i className="ri-search-line search-icon"></i>
+          <input
+            type="text"
+            placeholder="Search all 150+ songs: Kishore, Arijit, Atif, Pasoori, Rafi..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          {searchQuery && (
+            <button
+              className="clear-search-btn"
+              onClick={() => setSearchQuery("")}
+            >
+              <i className="ri-close-line"></i>
+            </button>
+          )}
+        </div>
 
-            return (
-              <div
-                key={song._id || song.videoId || idx}
-                className={`queue-item ${isCurrent ? "active" : ""}`}
-                onClick={() => {
-                  setCurrentIndex(idx);
-                  setIsPlaying(true);
-                }}
+        {/* Queue List */}
+        <div className="queue-list">
+          {displayedSongs.length === 0 ? (
+            <div className="queue-empty-box">
+              <p>No songs found for "{searchQuery}".</p>
+              <button
+                className="banner-add-btn"
+                onClick={() => setSearchQuery("")}
               >
-                <span className="queue-num">
-                  {isCurrent && isPlaying ? (
-                    <i
-                      className="ri-equalizer-fill"
-                      style={{ color: songIsYt ? "#ef4444" : moodInfo.color }}
-                    ></i>
-                  ) : (
-                    idx + 1
-                  )}
-                </span>
-                <img
-                  src={
-                    song.cover ||
-                    (ytId
-                      ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`
-                      : "https://c.saavncdn.com/430/Aashiqui-2-Hindi-2013-500x500.jpg")
-                  }
-                  alt={song.title}
-                  className="queue-thumb"
-                />
-                <div className="queue-meta">
-                  <h4
-                    style={{
-                      color: isCurrent
-                        ? songIsYt
-                          ? "#fca5a5"
-                          : moodInfo.color
-                        : "#ffffff",
-                    }}
-                  >
-                    {song.title}
-                  </h4>
-                  <p>
-                    {song.artist}
-                    {songIsYt && (
-                      <span className="q-yt-badge">
-                        <i className="ri-youtube-fill"></i> YouTube
-                      </span>
-                    )}
-                    {song.isCustom && <span className="q-custom-badge">My Song</span>}
-                  </p>
-                </div>
-                <div className="queue-indicator">
-                  {isCurrent ? (
-                    isPlaying ? (
+                Clear Search
+              </button>
+            </div>
+          ) : (
+            displayedSongs.map((song, idx) => {
+              const isCurrent =
+                !searchQuery && idx === safeIndex;
+              const songIsYt =
+                song.source === "youtube" ||
+                Boolean(song.youtubeId) ||
+                Boolean(extractYouTubeId(song.audio));
+              const ytId =
+                song.youtubeId || (songIsYt ? extractYouTubeId(song.audio) : null);
+              const isSongFav = checkIsLiked(song);
+
+              return (
+                <div
+                  key={song._id || song.videoId || idx}
+                  className={`queue-item ${isCurrent ? "active" : ""}`}
+                  onClick={() => {
+                    if (searchQuery.trim() && onPlaySong) {
+                      onPlaySong(song);
+                    } else {
+                      setCurrentIndex(idx);
+                      setIsPlaying(true);
+                    }
+                  }}
+                >
+                  <span className="queue-num">
+                    {isCurrent && isPlaying ? (
                       <i
-                        className="ri-pause-circle-line"
-                        style={{ color: songIsYt ? "#ef4444" : moodInfo.color }}
+                        className="ri-equalizer-fill"
+                        style={{ color: moodInfo.color }}
                       ></i>
                     ) : (
+                      idx + 1
+                    )}
+                  </span>
+                  <img
+                    src={
+                      song.cover ||
+                      (ytId
+                        ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`
+                        : "https://c.saavncdn.com/430/Aashiqui-2-Hindi-2013-500x500.jpg")
+                    }
+                    alt={song.title}
+                    className="queue-thumb"
+                  />
+                  <div className="queue-meta">
+                    <h4
+                      style={{
+                        color: isCurrent ? moodInfo.color : "#ffffff",
+                      }}
+                    >
+                      {song.title}
+                    </h4>
+                    <p>
+                      {song.artist}
+                      {song.tag && <span className="q-tag-pill">{song.tag}</span>}
+                    </p>
+                  </div>
+
+                  {/* Fast Action Buttons: Heart + Playlist */}
+                  <div className="queue-item-actions">
+                    <button
+                      className={`q-action-heart ${isSongFav ? "liked" : ""}`}
+                      onClick={(e) => handleToggleLike(song, e)}
+                      title={isSongFav ? "Liked" : "Like Song"}
+                    >
                       <i
-                        className="ri-play-circle-line"
-                        style={{ color: songIsYt ? "#ef4444" : moodInfo.color }}
+                        className={isSongFav ? "ri-heart-fill" : "ri-heart-line"}
                       ></i>
-                    )
-                  ) : (
-                    <i className="ri-play-mini-line"></i>
-                  )}
+                    </button>
+                    {onOpenPlaylistModal && (
+                      <button
+                        className="q-action-pl"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onOpenPlaylistModal(song);
+                        }}
+                        title="Add to Playlist"
+                      >
+                        <i className="ri-folder-add-line"></i>
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       </div>
     </div>

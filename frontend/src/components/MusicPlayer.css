@@ -830,3 +830,191 @@
   font-weight: 700;
   margin-left: 0.4rem;
 }
+
+/* MusicPlayer Favorites & Playlist Integration */
+
+.track-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  width: 100%;
+}
+
+.track-quick-btns {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.track-heart-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.track-heart-btn:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
+  transform: scale(1.1);
+}
+
+.track-heart-btn.liked {
+  background: #ef4444;
+  border-color: #ef4444;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.45);
+}
+
+.track-pl-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.track-pl-btn:hover {
+  background: #6366f1;
+  border-color: #6366f1;
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+/* Queue Search Input */
+.queue-search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.65rem;
+}
+
+.queue-search-input-box .search-icon {
+  position: absolute;
+  left: 0.8rem;
+  color: #64748b;
+  font-size: 0.95rem;
+  pointer-events: none;
+}
+
+.queue-search-input-box input {
+  width: 100%;
+  background: rgba(14, 14, 26, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 0.55rem 2rem 0.55rem 2.2rem;
+  color: #ffffff;
+  font-size: 0.8rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.queue-search-input-box input:focus {
+  border-color: #6366f1;
+  background: rgba(18, 18, 34, 0.95);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+}
+
+.clear-search-btn {
+  position: absolute;
+  right: 0.65rem;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.2rem;
+}
+
+.clear-search-btn:hover {
+  color: #ffffff;
+}
+
+.queue-empty-box {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.82rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+/* Queue Item Quick Action Buttons */
+.queue-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: auto;
+}
+
+.q-action-heart {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 1.05rem;
+  cursor: pointer;
+  padding: 0.2rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.q-action-heart:hover {
+  color: #ef4444;
+  transform: scale(1.15);
+}
+
+.q-action-heart.liked {
+  color: #ef4444;
+}
+
+.q-action-pl {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.q-action-pl:hover {
+  background: #6366f1;
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+.q-tag-pill {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.05rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.62rem;
+  color: #cbd5e1;
+  margin-left: 0.35rem;
+}
