@@ -1,7 +1,7 @@
 // libraryUtils.js - Master Unified Music Library for instant universal search
 
 import { DEFAULT_SONGS } from "../data/songsData";
-import { CURATED_YOUTUBE_SONGS } from "./youtubeUtils";
+import { CURATED_YOUTUBE_SONGS, searchWorldSongs } from "./youtubeUtils";
 
 export function getAllLibrarySongs() {
   const songsList = [];
@@ -63,7 +63,7 @@ export function getAllLibrarySongs() {
   return songsList;
 }
 
-// Search across all songs
+// Search across all local songs (instant 0ms response)
 export function searchLibrarySongs(query) {
   if (!query || !query.trim()) {
     return getAllLibrarySongs();
@@ -78,4 +78,31 @@ export function searchLibrarySongs(query) {
     const tagMatch = (s.tag || "").toLowerCase().includes(q);
     return titleMatch || artistMatch || moodMatch || tagMatch;
   });
+}
+
+// Master Unified World Search: searches 150+ local Bollywood/Pakistani classics + any song in the world
+export async function searchUnifiedSongs(query, apiKey = "") {
+  if (!query || !query.trim()) {
+    return getAllLibrarySongs();
+  }
+
+  // 1. Instant local results
+  const localMatches = searchLibrarySongs(query);
+
+  // 2. World catalog results
+  const worldMatches = await searchWorldSongs(query, apiKey);
+
+  // 3. Deduplicate
+  const seen = new Set();
+  const combined = [];
+
+  for (const s of [...localMatches, ...worldMatches]) {
+    const key = `${(s.title || "").toLowerCase()} ${(s.artist || "").toLowerCase()}`.trim();
+    if (key && !seen.has(key)) {
+      seen.add(key);
+      combined.push(s);
+    }
+  }
+
+  return combined;
 }

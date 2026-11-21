@@ -3,7 +3,7 @@ import "./MusicPlayer.css";
 import { MOOD_DETAILS } from "../data/songsData";
 import { extractYouTubeId } from "../utils/youtubeUtils";
 import { toggleLikeSong, isSongLiked } from "../utils/playlistUtils";
-import { searchLibrarySongs } from "../utils/libraryUtils";
+import { searchLibrarySongs, searchUnifiedSongs } from "../utils/libraryUtils";
 
 const MusicPlayer = ({
   songs,
@@ -22,6 +22,8 @@ const MusicPlayer = ({
   const [isShuffle, setIsShuffle] = useState(false);
   const [isLoop, setIsLoop] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
   const [likedMap, setLikedMap] = useState({});
 
   const audioRef = useRef(null);
@@ -38,6 +40,7 @@ const MusicPlayer = ({
   const isYouTube =
     currentSong?.source === "youtube" ||
     Boolean(currentSong?.youtubeId) ||
+    Boolean(currentSong?.youtubeQuery) ||
     Boolean(extractYouTubeId(currentSong?.audio));
 
   const ytVideoId =
@@ -67,6 +70,37 @@ const MusicPlayer = ({
     }
   };
 
+  // Live Universal Worldwide Search with debouncing
+  useEffect(() => {
+    const q = searchQuery.trim();
+    if (!q) {
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    // 1. Instant local library results (0ms)
+    const local = searchLibrarySongs(q);
+    setSearchResults(local);
+
+    // 2. Worldwide catalog search (covers ANY song in the world)
+    setIsSearching(true);
+    const timer = setTimeout(async () => {
+      try {
+        const unified = await searchUnifiedSongs(q);
+        if (unified && unified.length > 0) {
+          setSearchResults(unified);
+        }
+      } catch (err) {
+        console.warn("World search error:", err);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 320);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   // Reset index when songs array changes
   useEffect(() => {
     setCurrentIndex(0);
@@ -90,7 +124,7 @@ const MusicPlayer = ({
         .play()
         .catch((err) => console.log("Audio play error:", err));
     }
-  }, [currentIndex, currentSong, isYouTube]);
+  }, [currentIndex, currentSong, isYouTube, isPlaying]);
 
   const togglePlayPause = () => {
     if (!currentSong) return;
@@ -187,8 +221,19 @@ const MusicPlayer = ({
 
   // Filter queue songs by search query if user typed something
   const displayedSongs = searchQuery.trim()
-    ? searchLibrarySongs(searchQuery)
+    ? searchResults.length > 0
+      ? searchResults
+      : searchLibrarySongs(searchQuery)
     : songs;
+
+  const handleSelectSong = (song, idx) => {
+    if (onPlaySong) {
+      onPlaySong(song);
+    } else {
+      setCurrentIndex(idx);
+    }
+    setIsPlaying(true);
+  };
 
   if (!songs || songs.length === 0) {
     return (
@@ -241,11 +286,11 @@ const MusicPlayer = ({
         </div>
       </div>
 
-      {/* Hidden Native Audio Element (For direct MP3s) */}
+      {/* Hidden Native Audio Element (For direct MP3s & World Audio Previews) */}
       {!isYouTube && (
         <audio
           ref={audioRef}
-          src={currentSong?.audio}
+          src={currentSong?.audio || currentSong?.previewUrl}
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={handleLoadedMetadata}
           onEnded={handleEnded}
@@ -253,9 +298,15 @@ const MusicPlayer = ({
       )}
 
       {/* Hidden YouTube Audio Bridge (Streams audio with ZERO video UI) */}
-      {isYouTube && isPlaying && ytVideoId && (
+      {isYouTube && isPlaying && (
         <iframe
-          src={`https://www.youtube.com/embed/${ytVideoId}?autoplay=1&enablejsapi=1`}
+          src={
+            ytVideoId
+              ? `https://www.youtube.com/embed/${ytVideoId}?autoplay=1&enablejsapi=1`
+              : `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(
+                  currentSong?.youtubeQuery || currentSong?.title
+                )}&autoplay=1`
+          }
           title="YouTube Audio Stream"
           allow="autoplay"
           style={{
@@ -493,19 +544,28 @@ const MusicPlayer = ({
           )}
         </div>
 
-        {/* Search Bar Across Entire 150+ Library */}
+        {/* Search Bar Across Entire 150+ Library & World Songs */}
         <div className="queue-search-input-box">
-          <i className="ri-search-line search-icon"></i>
+          <i
+            className={
+              isSearching
+                ? "ri-loader-4-line spin search-icon"
+                : "ri-search-line search-icon"
+            }
+          ></i>
           <input
             type="text"
-            placeholder="Search all 150+ songs: Kishore, Arijit, Atif, Pasoori, Rafi..."
+            placeholder="Search ANY song in the world (Arijit, Tauba, Pasoori, Coldplay)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           {searchQuery && (
             <button
               className="clear-search-btn"
-              onClick={() => setSearchQuery("")}
+              onClick={() => {
+                setSearchQuery("");
+                setSearchResults([]);
+              }}
             >
               <i className="ri-close-line"></i>
             </button>
@@ -519,7 +579,10 @@ const MusicPlayer = ({
               <p>No songs found for "{searchQuery}".</p>
               <button
                 className="banner-add-btn"
-                onClick={() => setSearchQuery("")}
+                onClick={() => {
+                  setSearchQuery("");
+                  setSearchResults([]);
+                }}
               >
                 Clear Search
               </button>
@@ -531,6 +594,7 @@ const MusicPlayer = ({
               const songIsYt =
                 song.source === "youtube" ||
                 Boolean(song.youtubeId) ||
+                Boolean(song.youtubeQuery) ||
                 Boolean(extractYouTubeId(song.audio));
               const ytId =
                 song.youtubeId || (songIsYt ? extractYouTubeId(song.audio) : null);
@@ -540,14 +604,7 @@ const MusicPlayer = ({
                 <div
                   key={song._id || song.videoId || idx}
                   className={`queue-item ${isCurrent ? "active" : ""}`}
-                  onClick={() => {
-                    if (searchQuery.trim() && onPlaySong) {
-                      onPlaySong(song);
-                    } else {
-                      setCurrentIndex(idx);
-                      setIsPlaying(true);
-                    }
-                  }}
+                  onClick={() => handleSelectSong(song, idx)}
                 >
                   <span className="queue-num">
                     {isCurrent && isPlaying ? (

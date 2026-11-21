@@ -120,40 +120,46 @@ const AddSongModal = ({ isOpen, onClose, onSongAdded, initialData = null, defaul
         isCustom: true,
       };
 
-      // 1. Try uploading to backend MongoDB if online
-      try {
-        if (sourceType === "upload" && file) {
-          const formData = new FormData();
-          formData.append("title", newSongObj.title);
-          formData.append("artist", newSongObj.artist);
-          formData.append("mood", newSongObj.mood);
-          formData.append("audio", file);
-          if (newSongObj.cover) formData.append("cover", newSongObj.cover);
+      // 1. Try uploading to backend MongoDB if online on localhost
+      if (typeof window !== "undefined" && window.location.hostname === "localhost") {
+        try {
+          if (sourceType === "upload" && file) {
+            const formData = new FormData();
+            formData.append("title", newSongObj.title);
+            formData.append("artist", newSongObj.artist);
+            formData.append("mood", newSongObj.mood);
+            formData.append("audio", file);
+            if (newSongObj.cover) formData.append("cover", newSongObj.cover);
 
-          const res = await axios.post("http://localhost:3000/songs", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-            timeout: 10000,
-          });
-          if (res.data?.song) {
-            newSongObj._id = res.data.song._id;
-            newSongObj.audio = res.data.song.audio;
+            const res = await axios.post("http://localhost:3000/songs", formData, {
+              headers: { "Content-Type": "multipart/form-data" },
+              timeout: 10000,
+            });
+            if (res.data?.song) {
+              newSongObj._id = res.data.song._id;
+              newSongObj.audio = res.data.song.audio;
+            }
+          } else {
+            const res = await axios.post(
+              "http://localhost:3000/songs",
+              {
+                title: newSongObj.title,
+                artist: newSongObj.artist,
+                mood: newSongObj.mood,
+                source: newSongObj.source,
+                youtubeId: newSongObj.youtubeId,
+                audio: newSongObj.audio,
+                cover: newSongObj.cover,
+              },
+              { timeout: 4000 }
+            );
+            if (res.data?.song?._id) {
+              newSongObj._id = res.data.song._id;
+            }
           }
-        } else {
-          const res = await axios.post("http://localhost:3000/songs", {
-            title: newSongObj.title,
-            artist: newSongObj.artist,
-            mood: newSongObj.mood,
-            source: newSongObj.source,
-            youtubeId: newSongObj.youtubeId,
-            audio: newSongObj.audio,
-            cover: newSongObj.cover,
-          }, { timeout: 4000 });
-          if (res.data?.song?._id) {
-            newSongObj._id = res.data.song._id;
-          }
+        } catch (backendErr) {
+          console.warn("Backend save failed, saved locally:", backendErr.message);
         }
-      } catch (backendErr) {
-        console.warn("Backend save failed, saved locally:", backendErr.message);
       }
 
       // 2. Save in localStorage so user's songs persist across reloads

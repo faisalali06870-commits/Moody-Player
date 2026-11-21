@@ -96,28 +96,26 @@ function FaceDetection({ setSongs, setCurrentMood, currentMood, onSelectMood }) 
 
         if (onSelectMood) {
           onSelectMood(detectedExpression);
-        } else if (setCurrentMood) {
-          setCurrentMood(detectedExpression);
-        }
+        } else {
+          if (setCurrentMood) {
+            setCurrentMood(detectedExpression);
+          }
+          const fallback = DEFAULT_SONGS.filter(
+            (s) => s.mood.toLowerCase() === detectedExpression,
+          );
+          setSongs(fallback.length > 0 ? fallback : DEFAULT_SONGS.slice(0, 15));
 
-        axios
-          .get(`http://localhost:3000/songs?mood=${detectedExpression}`)
-          .then((response) => {
-            if (response.data && response.data.songs && response.data.songs.length > 0) {
-              setSongs(response.data.songs);
-            } else {
-              const fallback = DEFAULT_SONGS.filter(
-                (s) => s.mood.toLowerCase() === detectedExpression,
-              );
-              setSongs(fallback.length > 0 ? fallback : DEFAULT_SONGS.slice(0, 15));
-            }
-          })
-          .catch(() => {
-            const fallback = DEFAULT_SONGS.filter(
-              (s) => s.mood.toLowerCase() === detectedExpression,
-            );
-            setSongs(fallback.length > 0 ? fallback : DEFAULT_SONGS.slice(0, 15));
-          });
+          if (typeof window !== "undefined" && window.location.hostname === "localhost") {
+            axios
+              .get(`http://localhost:3000/songs?mood=${detectedExpression}`)
+              .then((response) => {
+                if (response.data && response.data.songs && response.data.songs.length > 0) {
+                  setSongs(response.data.songs);
+                }
+              })
+              .catch(() => {});
+          }
+        }
       } else {
         setExpression("No face detected");
         setConfidence(null);

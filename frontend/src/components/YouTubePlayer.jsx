@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import {
   getCuratedYouTubeTracks,
@@ -6,7 +6,7 @@ import {
   YOUTUBE_CATEGORIES,
   searchWorldSongs,
 } from "../utils/youtubeUtils";
-import { searchLibrarySongs } from "../utils/libraryUtils";
+import { searchLibrarySongs, searchUnifiedSongs } from "../utils/libraryUtils";
 import { MOOD_DETAILS } from "../data/songsData";
 import { toggleLikeSong, isSongLiked } from "../utils/playlistUtils";
 import "./YouTubePlayer.css";
@@ -25,9 +25,21 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong, onOpenPlaylistModal, o
   const [apiKey, setApiKey] = useState(() => localStorage.getItem("moody_yt_api_key") || "");
   const [showKeyInput, setShowKeyInput] = useState(false);
   const [likedMap, setLikedMap] = useState({});
+  const audioRef = useRef(null);
 
   const cleanMood = (mood || "neutral").toLowerCase();
   const moodInfo = MOOD_DETAILS[cleanMood] || MOOD_DETAILS.neutral;
+
+  // Sync native audio playback if playing audio track
+  useEffect(() => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.play().catch(() => {});
+      } else {
+        audioRef.current.pause();
+      }
+    }
+  }, [isPlaying, activeVideo]);
 
   // Check liked status
   const checkIsLiked = (song) => {
@@ -61,23 +73,25 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong, onOpenPlaylistModal, o
 
   const fetchMoodSongs = async (targetMood) => {
     setLoading(true);
-    try {
-      // 1. Try backend YouTube route
-      const backendRes = await axios.get(
-        `http://localhost:3000/api/youtube/search?mood=${targetMood}`,
-        { timeout: 3000 }
-      );
-      if (backendRes.data?.songs?.length > 0) {
-        setSongs(backendRes.data.songs);
-        setActiveVideo(backendRes.data.songs[0]);
-        setLoading(false);
-        return;
+    // Only query localhost when running locally in development
+    if (typeof window !== "undefined" && window.location.hostname === "localhost") {
+      try {
+        const backendRes = await axios.get(
+          `http://localhost:3000/api/youtube/search?mood=${targetMood}`,
+          { timeout: 1500 }
+        );
+        if (backendRes.data?.songs?.length > 0) {
+          setSongs(backendRes.data.songs);
+          setActiveVideo(backendRes.data.songs[0]);
+          setLoading(false);
+          return;
+        }
+      } catch {
+        // Fallback to local curated
       }
-    } catch {
-      // Fallback
     }
 
-    // 2. Fallback to rich curated Hindustani & Pakistani tracks
+    // Curated rich Hindustani & Pakistani classics
     const curated = getCuratedYouTubeTracks(targetMood);
     setSongs(curated);
     if (curated.length > 0) setActiveVideo(curated[0]);
@@ -85,9 +99,10 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong, onOpenPlaylistModal, o
   };
 
   // Universal World Song Search (Searches ANY song in the entire world)
-  const handleSearch = async (e) => {
+  const handleSearch = async (e, customQuery = null) => {
     if (e) e.preventDefault();
-    if (!searchQuery.trim()) {
+    const q = (customQuery !== null ? customQuery : searchQuery).trim();
+    if (!q) {
       fetchMoodSongs(cleanMood);
       return;
     }
@@ -95,21 +110,10 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong, onOpenPlaylistModal, o
     setLoading(true);
 
     try {
-      // 1. Search the whole world (YouTube live search engine)
-      const worldResults = await searchWorldSongs(searchQuery, apiKey);
-      if (worldResults && worldResults.length > 0) {
-        setSongs(worldResults);
-        setActiveVideo(worldResults[0]);
-        setIsPlaying(true);
-        setLoading(false);
-        return;
-      }
-
-      // 2. Fallback: Search 150+ library
-      const libResults = searchLibrarySongs(searchQuery);
-      if (libResults.length > 0) {
-        setSongs(libResults);
-        setActiveVideo(libResults[0]);
+      const results = await searchUnifiedSongs(q, apiKey);
+      if (results && results.length > 0) {
+        setSongs(results);
+        setActiveVideo(results[0]);
         setIsPlaying(true);
       }
     } catch (err) {
@@ -239,8 +243,8 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong, onOpenPlaylistModal, o
           type="button"
           className="yt-tag"
           onClick={() => {
-            setSearchQuery("Coke Studio Pakistan best songs");
-            handleSearch();
+            setSearchQuery("Coke Studio Pakistan");
+            handleSearch(null, "Coke Studio Pakistan");
           }}
         >
           🇵🇰 Coke Studio
@@ -249,8 +253,8 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong, onOpenPlaylistModal, o
           type="button"
           className="yt-tag"
           onClick={() => {
-            setSearchQuery("Kishore Kumar Mohammad Rafi evergreen hits");
-            handleSearch();
+            setSearchQuery("Kishore Kumar evergreen hits");
+            handleSearch(null, "Kishore Kumar evergreen hits");
           }}
         >
           📻 Retro Classics
@@ -260,7 +264,7 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong, onOpenPlaylistModal, o
           className="yt-tag"
           onClick={() => {
             setSearchQuery("Nusrat Fateh Ali Khan qawwali");
-            handleSearch();
+            handleSearch(null, "Nusrat Fateh Ali Khan qawwali");
           }}
         >
           🕊️ Sufi Qawwali
@@ -269,8 +273,8 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong, onOpenPlaylistModal, o
           type="button"
           className="yt-tag"
           onClick={() => {
-            setSearchQuery("Arijit Singh latest romantic hits");
-            handleSearch();
+            setSearchQuery("Arijit Singh romantic hits");
+            handleSearch(null, "Arijit Singh romantic hits");
           }}
         >
           ❤️ Arijit Singh
@@ -279,8 +283,8 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong, onOpenPlaylistModal, o
           type="button"
           className="yt-tag"
           onClick={() => {
-            setSearchQuery("Sidhu Moose Wala Diljit Dosanjh");
-            handleSearch();
+            setSearchQuery("Diljit Dosanjh Karan Aujla");
+            handleSearch(null, "Diljit Dosanjh Karan Aujla");
           }}
         >
           🔥 Punjabi Hits
@@ -289,8 +293,8 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong, onOpenPlaylistModal, o
           type="button"
           className="yt-tag"
           onClick={() => {
-            setSearchQuery("Top Global Pop Hits 2024");
-            handleSearch();
+            setSearchQuery("Top Global Pop Hits");
+            handleSearch(null, "Top Global Pop Hits");
           }}
         >
           🌍 Global Hits
@@ -304,7 +308,13 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong, onOpenPlaylistModal, o
             /* Video Mode */
             <div className="yt-iframe-container">
               <iframe
-                src={`https://www.youtube.com/embed/${activeVideo.videoId}?autoplay=1&enablejsapi=1`}
+                src={
+                  activeVideo.videoId
+                    ? `https://www.youtube.com/embed/${activeVideo.videoId}?autoplay=1&enablejsapi=1`
+                    : `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(
+                        activeVideo.youtubeQuery || activeVideo.title
+                      )}&autoplay=1`
+                }
                 title={activeVideo.title}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
@@ -313,23 +323,36 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong, onOpenPlaylistModal, o
           ) : (
             /* Audio Music Player Mode (Clean Album Art + Spinning Vinyl) */
             <div className="yt-audio-player-box">
-              {/* Hidden YouTube audio bridge */}
-              <iframe
-                src={
-                  isPlaying
-                    ? `https://www.youtube.com/embed/${activeVideo.videoId}?autoplay=1&enablejsapi=1`
-                    : ""
-                }
-                title="Audio Stream"
-                style={{
-                  position: "absolute",
-                  width: "1px",
-                  height: "1px",
-                  opacity: 0,
-                  pointerEvents: "none",
-                  border: "none",
-                }}
-              />
+              {/* Native audio player if track has direct MP3/AAC preview */}
+              {!activeVideo.videoId && (activeVideo.audio || activeVideo.previewUrl) ? (
+                <audio
+                  ref={audioRef}
+                  src={activeVideo.audio || activeVideo.previewUrl}
+                  onEnded={() => setIsPlaying(false)}
+                />
+              ) : (
+                /* Hidden YouTube audio bridge */
+                <iframe
+                  src={
+                    isPlaying
+                      ? activeVideo.videoId
+                        ? `https://www.youtube.com/embed/${activeVideo.videoId}?autoplay=1&enablejsapi=1`
+                        : `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(
+                            activeVideo.youtubeQuery || activeVideo.title
+                          )}&autoplay=1`
+                      : ""
+                  }
+                  title="Audio Stream"
+                  style={{
+                    position: "absolute",
+                    width: "1px",
+                    height: "1px",
+                    opacity: 0,
+                    pointerEvents: "none",
+                    border: "none",
+                  }}
+                />
+              )}
 
               <div className="yt-music-art-stage">
                 {/* Vinyl disc */}
@@ -344,7 +367,10 @@ const YouTubePlayer = ({ mood = "neutral", onOpenAddSong, onOpenPlaylistModal, o
                   <img
                     src={
                       activeVideo.thumbnail ||
-                      `https://img.youtube.com/vi/${activeVideo.videoId}/hqdefault.jpg`
+                      activeVideo.cover ||
+                      (activeVideo.videoId
+                        ? `https://img.youtube.com/vi/${activeVideo.videoId}/hqdefault.jpg`
+                        : "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500")
                     }
                     alt={activeVideo.title}
                     className="yt-cover-pic"

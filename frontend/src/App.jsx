@@ -92,22 +92,24 @@ function App() {
     const combined = [...customSongs, ...(localMatch.length > 0 ? localMatch : DEFAULT_SONGS.slice(0, 15))];
     setSongs(combined);
 
-    // 2. Fetch fresh from backend MongoDB (if online)
-    axios
-      .get(`http://localhost:3000/songs?mood=${cleanMood}`)
-      .then((response) => {
-        if (response.data && response.data.songs && response.data.songs.length > 0) {
-          const dbSongs = response.data.songs;
-          const dbTitles = new Set(dbSongs.map((s) => (s.title || "").toLowerCase()));
-          const extraDefaults = combined.filter(
-            (s) => !dbTitles.has((s.title || "").toLowerCase())
-          );
-          setSongs([...dbSongs, ...extraDefaults]);
-        }
-      })
-      .catch(() => {
-        // Fallback already active
-      });
+    // 2. Fetch fresh from backend MongoDB only when running locally on localhost
+    if (typeof window !== "undefined" && window.location.hostname === "localhost") {
+      axios
+        .get(`http://localhost:3000/songs?mood=${cleanMood}`)
+        .then((response) => {
+          if (response.data && response.data.songs && response.data.songs.length > 0) {
+            const dbSongs = response.data.songs;
+            const dbTitles = new Set(dbSongs.map((s) => (s.title || "").toLowerCase()));
+            const extraDefaults = combined.filter(
+              (s) => !dbTitles.has((s.title || "").toLowerCase())
+            );
+            setSongs([...dbSongs, ...extraDefaults]);
+          }
+        })
+        .catch(() => {
+          // Fallback already active
+        });
+    }
   };
 
   useEffect(() => {

@@ -1,4 +1,5 @@
 // YouTube utility helper functions & rich curated Hindustani + Pakistani Classics
+import axios from "axios";
 
 export function extractYouTubeId(urlOrId) {
   if (!urlOrId) return null;
@@ -599,95 +600,131 @@ export function getCuratedYouTubeTracks(mood) {
   return CURATED_YOUTUBE_SONGS[cleanMood] || CURATED_YOUTUBE_SONGS.neutral;
 }
 
-import axios from "axios";
-
-// Universal World Song Searcher (searches any song on YouTube/World)
+// Universal World Song Searcher (searches ANY song in the entire world with zero lag)
 export async function searchWorldSongs(query, apiKey = "") {
   if (!query || !query.trim()) return [];
+  const cleanQ = query.trim();
 
   // 1. Direct YouTube link or 11-char ID
-  const directId = extractYouTubeId(query);
+  const directId = extractYouTubeId(cleanQ);
   if (directId) {
     return [
       {
+        _id: "yt-" + directId,
         videoId: directId,
+        youtubeId: directId,
         title: "YouTube Video: " + directId,
         artist: "YouTube",
         thumbnail: `https://img.youtube.com/vi/${directId}/hqdefault.jpg`,
+        cover: `https://img.youtube.com/vi/${directId}/hqdefault.jpg`,
         source: "youtube",
         tag: "Direct Link 🔗",
       },
     ];
   }
 
-  // 2. Try Backend live YouTube search engine
-  try {
-    const res = await axios.get(
-      `http://localhost:3000/api/youtube/search?q=${encodeURIComponent(query)}`,
-      { timeout: 3500 }
-    );
-    if (res.data?.songs?.length > 0) {
-      return res.data.songs;
+  const results = [];
+  const seenKeys = new Set();
+
+  const addUnique = (song) => {
+    if (!song || !song.title) return;
+    const key = `${(song.title || "").toLowerCase()} ${(song.artist || "").toLowerCase()}`.trim();
+    if (key && !seenKeys.has(key)) {
+      seenKeys.add(key);
+      results.push(song);
     }
-  } catch (e) {
-    // Backend offline / not reachable
+  };
+
+  // 2. High-speed worldwide audio catalog search (No API key needed, CORS enabled, HTTPS safe for GitHub Pages)
+  try {
+    const itunesUrl = `https://itunes.apple.com/search?term=${encodeURIComponent(cleanQ)}&media=music&entity=song&limit=30`;
+    const itunesRes = await axios.get(itunesUrl, { timeout: 4000 });
+    if (itunesRes.data?.results?.length > 0) {
+      itunesRes.data.results.forEach((it) => {
+        const coverArt = it.artworkUrl100
+          ? it.artworkUrl100.replace("100x100bb.jpg", "600x600bb.jpg")
+          : "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500";
+        addUnique({
+          _id: "world-" + it.trackId,
+          title: it.trackName,
+          artist: it.artistName,
+          audio: it.previewUrl,
+          previewUrl: it.previewUrl,
+          cover: coverArt,
+          thumbnail: coverArt,
+          source: "audio",
+          duration: it.trackTimeMillis ? Math.round(it.trackTimeMillis / 1000) : 30,
+          tag: "World Hit 🌍",
+          youtubeQuery: `${it.trackName} ${it.artistName}`,
+        });
+      });
+    }
+  } catch (err) {
+    console.warn("World catalog search note:", err?.message || err);
   }
 
-  // 3. Try YouTube Data API v3 if key available
+  // 3. Try YouTube Data API v3 if user provided an API key
   if (apiKey && apiKey.trim()) {
     try {
-      const res = await axios.get(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${encodeURIComponent(
-          query
-        )}&type=video&key=${apiKey.trim()}`
+      const ytRes = await axios.get(
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=15&q=${encodeURIComponent(
+          cleanQ
+        )}&type=video&key=${apiKey.trim()}`,
+        { timeout: 3500 }
       );
-      if (res.data?.items?.length > 0) {
-        return res.data.items.map((it) => ({
-          videoId: it.id.videoId,
-          title: it.snippet.title,
-          artist: it.snippet.channelTitle,
-          thumbnail:
-            it.snippet.thumbnails?.high?.url ||
-            it.snippet.thumbnails?.medium?.url ||
-            `https://img.youtube.com/vi/${it.id.videoId}/hqdefault.jpg`,
-          source: "youtube",
-          tag: "YouTube Search 🔴",
-        }));
+      if (ytRes.data?.items?.length > 0) {
+        ytRes.data.items.forEach((it) => {
+          const vId = it.id?.videoId;
+          if (vId) {
+            const thumb =
+              it.snippet?.thumbnails?.high?.url ||
+              it.snippet?.thumbnails?.medium?.url ||
+              `https://img.youtube.com/vi/${vId}/hqdefault.jpg`;
+            addUnique({
+              _id: "yt-" + vId,
+              videoId: vId,
+              youtubeId: vId,
+              title: it.snippet.title,
+              artist: it.snippet.channelTitle,
+              thumbnail: thumb,
+              cover: thumb,
+              source: "youtube",
+              tag: "YouTube Search 🔴",
+            });
+          }
+        });
       }
     } catch (e) {
-      console.warn("YouTube API search error:", e);
+      console.warn("YouTube API search warning:", e?.message);
     }
   }
 
-  // 4. Try public mirror for live YouTube results
-  const mirrors = [
-    "https://inv.nadeko.net/api/v1/search?q=",
-    "https://invidious.jing.rocks/api/v1/search?q=",
-  ];
-  for (const mirror of mirrors) {
+  // 4. Try local backend search engine only if running on localhost (never on GitHub Pages to prevent mixed-content blocks)
+  if (typeof window !== "undefined" && window.location.hostname === "localhost") {
     try {
-      const res = await axios.get(
-        `${mirror}${encodeURIComponent(query)}&type=video`,
-        { timeout: 3000 }
+      const backendRes = await axios.get(
+        `http://localhost:3000/api/youtube/search?q=${encodeURIComponent(cleanQ)}`,
+        { timeout: 1500 }
       );
-      if (Array.isArray(res.data) && res.data.length > 0) {
-        return res.data
-          .filter((v) => v.videoId)
-          .map((v) => ({
-            videoId: v.videoId,
-            title: v.title,
-            artist: v.author,
-            thumbnail:
-              v.videoThumbnails?.[0]?.url ||
-              `https://img.youtube.com/vi/${v.videoId}/hqdefault.jpg`,
-            source: "youtube",
-            tag: "World Search 🌍",
-          }));
+      if (backendRes.data?.songs?.length > 0) {
+        backendRes.data.songs.forEach((s) => addUnique(s));
       }
     } catch {
-      // Continue
+      // Local backend offline
     }
   }
 
-  return [];
+  // 5. Always provide instant YouTube Search Stream card so user can play any song via YouTube
+  addUnique({
+    _id: "yt-stream-" + encodeURIComponent(cleanQ.toLowerCase()),
+    title: `Play "${cleanQ}" (Full YouTube Stream)`,
+    artist: "YouTube Live Audio",
+    thumbnail: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500",
+    cover: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500",
+    source: "youtube",
+    youtubeQuery: cleanQ,
+    tag: "YouTube Live ⚡",
+  });
+
+  return results;
 }
