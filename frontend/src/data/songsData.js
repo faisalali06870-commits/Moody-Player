@@ -1,4 +1,6 @@
-export const DEFAULT_SONGS = [
+import romanticSongs from "./romanticSongs.json";
+
+const BASE_DEFAULT_SONGS = [
   {
     "_id": "bolly-1",
     "title": "Tauba Tauba",
@@ -841,7 +843,10 @@ export const DEFAULT_SONGS = [
   }
 ];
 
+export const DEFAULT_SONGS = [...BASE_DEFAULT_SONGS, ...romanticSongs];
+
 export const MOOD_DETAILS = {
+  romantic: { label: "Romantic", emoji: "❤️", color: "#f43f5e", quote: "Soulful Romantic Hits & Heartfelt Love Melodies" },
   happy: { label: "Happy", emoji: "😄", color: "#f59e0b", quote: "Bollywood Party & Feel-Good Beats" },
   sad: { label: "Sad", emoji: "😢", color: "#60a5fa", quote: "Heart-touching Arijit Singh & Melancholy Melodies" },
   neutral: { label: "Neutral", emoji: "😌", color: "#10b981", quote: "Soothing, Relaxed & Acoustic Bollywood" },

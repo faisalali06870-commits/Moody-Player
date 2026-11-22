@@ -4,7 +4,7 @@ import "./faceDetection.css";
 import axios from "axios";
 import { DEFAULT_SONGS, MOOD_DETAILS } from "../data/songsData";
 
-const ALL_MOODS = ["happy", "sad", "neutral", "surprised", "angry", "fearful", "disgusted"];
+const ALL_MOODS = ["romantic", "happy", "sad", "neutral", "surprised", "angry", "fearful", "disgusted"];
 
 function FaceDetection({ setSongs, setCurrentMood, currentMood, onSelectMood }) {
   const videoRef = useRef(null);

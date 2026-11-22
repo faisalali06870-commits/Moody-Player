@@ -34,7 +34,7 @@ export function getAllLibrarySongs() {
       songsList.push({
         ...s,
         source: "audio",
-        tag: "Bollywood Hit 🎵",
+        tag: s.mood === "romantic" ? "Romantic Hit ❤️" : (s.tag || "Bollywood Hit 🎵"),
       });
     }
   });
