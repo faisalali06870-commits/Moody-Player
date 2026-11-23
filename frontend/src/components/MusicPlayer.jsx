@@ -48,7 +48,7 @@ const MusicPlayer = ({
 
   const effectiveDuration = isYouTube
     ? (currentSong?.duration || 260)
-    : (duration || 240);
+    : (duration || currentSong?.duration || 240);
 
   // Playback timer for streaming audio so seekbar and time counters advance smoothly for full songs
   useEffect(() => {
@@ -203,6 +203,37 @@ const MusicPlayer = ({
     setIsPlaying(true);
   };
 
+  // Quick 10s Forward (Aage Badhayein)
+  const handleForward10 = () => {
+    const maxT = effectiveDuration || 240;
+    if (audioRef.current) {
+      const nextTime = Math.min((audioRef.current.currentTime || currentTime) + 10, maxT);
+      try {
+        audioRef.current.currentTime = nextTime;
+      } catch (err) {
+        console.warn("Forward error:", err);
+      }
+      setCurrentTime(nextTime);
+    } else {
+      setCurrentTime((prev) => Math.min(prev + 10, maxT));
+    }
+  };
+
+  // Quick 10s Rewind (Peeche Karein)
+  const handleBackward10 = () => {
+    if (audioRef.current) {
+      const nextTime = Math.max((audioRef.current.currentTime || currentTime) - 10, 0);
+      try {
+        audioRef.current.currentTime = nextTime;
+      } catch (err) {
+        console.warn("Rewind error:", err);
+      }
+      setCurrentTime(nextTime);
+    } else {
+      setCurrentTime((prev) => Math.max(prev - 10, 0));
+    }
+  };
+
   const handleTimeUpdate = () => {
     if (audioRef.current) {
       setCurrentTime(audioRef.current.currentTime);
@@ -210,16 +241,20 @@ const MusicPlayer = ({
   };
 
   const handleLoadedMetadata = () => {
-    if (audioRef.current) {
+    if (audioRef.current && audioRef.current.duration && !isNaN(audioRef.current.duration)) {
       setDuration(audioRef.current.duration);
     }
   };
 
   const handleSeek = (e) => {
-    const seekTime = Number(e.target.value);
+    const seekTime = parseFloat(e.target.value);
     setCurrentTime(seekTime);
-    if (audioRef.current && !isYouTube) {
-      audioRef.current.currentTime = seekTime;
+    if (audioRef.current) {
+      try {
+        audioRef.current.currentTime = seekTime;
+      } catch (err) {
+        console.warn("Seek error:", err);
+      }
     }
   };
 
@@ -317,6 +352,8 @@ const MusicPlayer = ({
         <audio
           ref={audioRef}
           src={currentSong?.audio || currentSong?.previewUrl}
+          preload="auto"
+          autoPlay={isPlaying}
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={handleLoadedMetadata}
           onEnded={handleEnded}
@@ -443,11 +480,10 @@ const MusicPlayer = ({
             type="range"
             className="scrubber-track"
             min={0}
-            max={effectiveDuration}
+            max={effectiveDuration || 240}
             step="0.1"
             value={currentTime}
             onChange={handleSeek}
-            disabled={isYouTube}
             style={{
               background: `linear-gradient(to right, ${moodInfo.color} ${
                 (currentTime / (effectiveDuration || 1)) * 100
@@ -469,6 +505,15 @@ const MusicPlayer = ({
             title="Shuffle Playlist"
           >
             <i className="ri-shuffle-line"></i>
+          </button>
+
+          {/* Rewind 10s Button */}
+          <button
+            className="sec-btn"
+            onClick={handleBackward10}
+            title="Rewind 10 Seconds (-10s)"
+          >
+            <i className="ri-replay-10-line"></i>
           </button>
 
           {/* Previous Button (Peeche) */}
@@ -504,6 +549,15 @@ const MusicPlayer = ({
             title="Next Song (Aage)"
           >
             <i className="ri-skip-forward-fill"></i>
+          </button>
+
+          {/* Forward 10s Button */}
+          <button
+            className="sec-btn"
+            onClick={handleForward10}
+            title="Forward 10 Seconds (+10s)"
+          >
+            <i className="ri-forward-10-line"></i>
           </button>
 
           {/* Loop / Repeat Button */}
