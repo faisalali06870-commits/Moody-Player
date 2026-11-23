@@ -46,6 +46,32 @@ const MusicPlayer = ({
   const ytVideoId =
     currentSong?.youtubeId || (isYouTube ? extractYouTubeId(currentSong?.audio) : null);
 
+  const effectiveDuration = isYouTube
+    ? (currentSong?.duration || 260)
+    : (duration || 240);
+
+  // Playback timer for streaming audio so seekbar and time counters advance smoothly for full songs
+  useEffect(() => {
+    let timer;
+    if (isYouTube && isPlaying) {
+      timer = setInterval(() => {
+        setCurrentTime((prev) => {
+          if (prev >= effectiveDuration) {
+            handleNext();
+            return 0;
+          }
+          return prev + 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [isYouTube, isPlaying, effectiveDuration]);
+
+  // Reset currentTime when song changes
+  useEffect(() => {
+    setCurrentTime(0);
+  }, [currentSong?._id, currentIndex]);
+
   // Check liked status
   const checkIsLiked = (song) => {
     if (!song) return false;
@@ -304,7 +330,7 @@ const MusicPlayer = ({
             ytVideoId
               ? `https://www.youtube.com/embed/${ytVideoId}?autoplay=1&enablejsapi=1`
               : `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(
-                  currentSong?.youtubeQuery || currentSong?.title
+                  currentSong?.youtubeQuery || `${currentSong?.title} ${currentSong?.artist || ""} full song audio`
                 )}&autoplay=1`
           }
           title="YouTube Audio Stream"
@@ -411,28 +437,26 @@ const MusicPlayer = ({
           </div>
         </div>
 
-        {/* Seekbar and Timing */}
+        {/* Seekbar and Timing (Works for full songs & direct audio) */}
         <div className="progress-area">
           <input
             type="range"
             className="scrubber-track"
             min={0}
-            max={duration || 100}
+            max={effectiveDuration}
             step="0.1"
-            value={isYouTube ? 0 : currentTime}
+            value={currentTime}
             onChange={handleSeek}
             disabled={isYouTube}
             style={{
-              background: isYouTube
-                ? `linear-gradient(to right, ${moodInfo.color} 100%, #252538 100%)`
-                : `linear-gradient(to right, ${moodInfo.color} ${
-                    (currentTime / (duration || 1)) * 100
-                  }%, #252538 ${(currentTime / (duration || 1)) * 100}%)`,
+              background: `linear-gradient(to right, ${moodInfo.color} ${
+                (currentTime / (effectiveDuration || 1)) * 100
+              }%, #252538 ${(currentTime / (effectiveDuration || 1)) * 100}%)`,
             }}
           />
           <div className="time-row">
-            <span>{isYouTube ? "Streaming Audio" : formatTime(currentTime)}</span>
-            <span>{isYouTube ? "HD Stereo" : formatTime(duration)}</span>
+            <span>{formatTime(currentTime)}</span>
+            <span>{formatTime(effectiveDuration)}</span>
           </div>
         </div>
 
